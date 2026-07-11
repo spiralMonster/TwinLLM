@@ -1,0 +1,31 @@
+## Create Mongodb server and Mongo express:
+
+Step 1: Create network to couple the mongodb server and mongo express:
+```
+docker network create mongo-network
+
+```
+
+Step 2: Start Mongodb Server:
+```
+docker run -d \
+--name mongodb \
+--network mongo-network \
+-p 27017:27017 \
+-e MONGO_INITDB_ROOT_USERNAME=admin \
+-e MONGO_INITDB_ROOT_PASSWORD=password \
+mongo:7.0
+```
+
+Step 3: Start Mongo Express:
+```
+docker run -d \
+--name mongo-express \
+--network mongo-network \
+-p 8081:8081 \
+-e ME_CONFIG_MONGODB_URL="mongodb://admin:password@mongodb:27017/admin?authSource=admin" \
+-e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+-e ME_CONFIG_MONGODB_ADMINPASSWORD=pass \
+mongo-express:1.0.2
+
+```
