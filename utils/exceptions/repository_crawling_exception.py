@@ -1,0 +1,2 @@
+class RepositoryCrawlingException(Exception):
+    pass
