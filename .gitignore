@@ -1,3 +1,7 @@
 .idea/
 .ruff_cache/
+.linkedin_profile/
+__pycache__/
+utils/__pycache__/
+data_crawlers/__pycache__/
 .env

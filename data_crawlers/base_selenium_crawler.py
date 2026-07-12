@@ -1,5 +1,4 @@
 import time
-from tempfile import mkdtemp
 from abc import ABC
 
 import chromedriver_autoinstaller
@@ -26,13 +25,9 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-background-networking")
         options.add_argument("--ignore-certificate-errors")
-        options.add_argument(f"--user-data-dir={mkdtemp()}")
-        options.add_argument(f"--data-path={mkdtemp()}")
-        options.add_argument(f"--disk-cache-dir={mkdtemp()}")
-        options.add_argument(f"--remote-debugging-port=9226")
+        options.add_argument("--user-data-dir=.linkedin_profile")
 
         self.set_extra_driver_options(options)
-
         self.driver=webdriver.Chrome(options=options)
 
 

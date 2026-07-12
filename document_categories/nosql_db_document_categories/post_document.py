@@ -5,6 +5,7 @@ from document_categories.data_category import DataCategory
 
 
 class PostDocument(Document):
+    content:str|None = None
     username: str|None = None
     image: Optional[str] = None
     link: str|None = None

@@ -1,14 +1,24 @@
-from loguru import logger
 from pydantic_settings import BaseSettings,SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class SettingsClass(BaseSettings):
     model_config=SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8"
     )
 
     #Mongodb Configs:
-    MONGODB_DATABASE_HOST: str ="mongodb://admin:password@mongodb:27017/admin?authSource=admin"
-    MONGODB_DATABASE_NAME: str ="llm_twin_data"
+    MONGODB_DATABASE_HOST: str
+    MONGODB_DATABASE_NAME: str
 
+    #LinkedIn Credentials:
+    LINKEDIN_USERNAME:str
+    LINKEDIN_PASSWORD:str
+
+    #AWS Credentials:
+    AWS_REGION:str
+    AWS_ACCESS_KEY:str
+    AWS_SECRET_KEY:str
+
+
+Settings=SettingsClass()
