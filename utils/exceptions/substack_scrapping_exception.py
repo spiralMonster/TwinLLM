@@ -1,0 +1,2 @@
+class SubstackScrappingException(Exception):
+    pass

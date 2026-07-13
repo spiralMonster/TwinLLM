@@ -2,12 +2,11 @@ import time
 from loguru import logger
 
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By,ByType
 
-
-from data_crawlers.base_crawler import BaseCrawler
 from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.post_document import PostDocument
@@ -15,10 +14,17 @@ from document_categories.nosql_db_document_categories.post_document import PostD
 from utils.exceptions.login_exception import LoginException
 from settings import Settings
 
+from utils.exceptions.linkedin_scrapping_exception import LinkedInScrappingException
 
 
-class LinkedinCrawler(BaseCrawler,BaseSeleniumCrawler):
+
+class LinkedinCrawler(BaseSeleniumCrawler):
     document_model=PostDocument
+
+
+    def set_extra_driver_options(self,options:Options) -> None:
+        options.add_argument("--user-data-dir=.linkedin_profile")
+
 
 
     def get_visible_element(
@@ -61,7 +67,7 @@ class LinkedinCrawler(BaseCrawler,BaseSeleniumCrawler):
 
 
     def login(self) -> None:
-        logger.info("Logging into Linkedin..")
+        logger.info("Logging into LinkedIn..")
 
         self.driver.get("https://www.linkedin.com/login")
         time.sleep(3)
@@ -96,73 +102,83 @@ class LinkedinCrawler(BaseCrawler,BaseSeleniumCrawler):
 
 
     def extract(self,link:str,**kwargs) -> None:
-        logger.info(f"Scrapping LinkedIn link: {link}")
+        User=kwargs["user"]
 
-        self.driver.get(link)
-        time.sleep(2)
+        try:
+            logger.info(f"Scrapping LinkedIn link: {link} of user: {User.full_name}")
 
-        driver_current_url=self.driver.current_url
-        if "authwall" in driver_current_url:
-            self.login()
-            time.sleep(3)
             self.driver.get(link)
+            time.sleep(2)
 
-        self.scroll_page()
-        time.sleep(2)
+            driver_current_url=self.driver.current_url
+            if "authwall" in driver_current_url:
+                self.login()
+                time.sleep(3)
+                self.driver.get(link)
 
-        docs=[]
-        dates=[]
+            self.scroll_page()
+            time.sleep(2)
 
-        doc_elements=self.driver.find_elements(By.CSS_SELECTOR,'span[dir="ltr"]')
-        date_elements=self.driver.find_elements(By.CSS_SELECTOR,".update-components-actor__sub-description")
+            docs=[]
+            dates=[]
 
-        user_name=doc_elements[0].text.strip()
+            doc_elements=self.driver.find_elements(By.CSS_SELECTOR,'span[dir="ltr"]')
+            date_elements=self.driver.find_elements(By.CSS_SELECTOR,".update-components-actor__sub-description")
 
-        ind=0
-        date_ind=0
-        num_docs=len(doc_elements)
+            user_name=doc_elements[0].text.strip()
 
-        while ind<num_docs:
-            doc_ind=ind+1
+            ind=0
+            date_ind=0
+            num_docs=len(doc_elements)
 
-            user=doc_elements[ind].text.strip()
-            doc=doc_elements[doc_ind].text.strip()
-            date=date_elements[date_ind].text.strip().split(" ")[0]
+            while ind<num_docs:
+                doc_ind=ind+1
 
-            if user==user_name:
-                docs.append(doc)
-                dates.append(date)
+                user=doc_elements[ind].text.strip()
+                doc=doc_elements[doc_ind].text.strip()
+                date=date_elements[date_ind].text.strip().split(" ")[0]
 
-            ind+=2
-            date_ind+=1
+                if user==user_name:
+                    docs.append(doc)
+                    dates.append(date)
 
+                ind+=2
+                date_ind+=1
+
+            self.driver.close()
+
+            for doc,date in zip(docs,dates):
+                old_document_model=self.document_model.find(
+                    content=doc,
+                    published_date=date
+                )
+
+                if old_document_model is not None:
+                    logger.info("The LinkedIn Post already exists.")
+                    continue
+
+
+                instance=self.document_model(
+                    content=doc,
+                    platform="LinkedIn",
+                    author_id=User.id,
+                    author_full_name=User.full_name,
+                    published_date=date,
+                    link=link
+                )
+
+                instance.save()
+
+        except Exception as e:
+            logger.info(f"Exception encountered: {e}")
+            logger.info(f"While scrapping LinkedIn link: {link} of user: {User.full_name}")
+
+            raise LinkedInScrappingException("Exception encountered!!!")
+
+
+
+        logger.info(f"Successfully scrapped and saved the LinkedIn posts for user: {User.full_name}")
         self.driver.close()
-
-        user=kwargs["user"]
-        for doc,date in zip(docs,dates):
-            old_document_model=self.document_model.find(
-                content=doc,
-                published_date=date
-            )
-
-            if old_document_model is not None:
-                logger.info("The LinkedIn Post already exists")
-                continue
-
-
-            instance=self.document_model(
-                content=doc,
-                platform="LinkedIn",
-                author_id=user.id,
-                author_full_name=user.full_name,
-                published_date=date,
-                link=link
-            )
-
-            instance.save()
-
-
-        logger.info(f"Successfully scrapped and saved the LinkedIn posts for user: {user.full_name}")
 
 
 

@@ -1,6 +1,7 @@
 .idea/
 .ruff_cache/
 .linkedin_profile/
+.substack_profile/
 __pycache__/
 utils/__pycache__/
 data_crawlers/__pycache__/

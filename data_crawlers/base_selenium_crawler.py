@@ -25,7 +25,7 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
         options.add_argument("--disable-extensions")
         options.add_argument("--disable-background-networking")
         options.add_argument("--ignore-certificate-errors")
-        options.add_argument("--user-data-dir=.linkedin_profile")
+
 
         self.set_extra_driver_options(options)
         self.driver=webdriver.Chrome(options=options)
@@ -61,4 +61,7 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
 
             last_height=new_height
             current_scroll+=1
+
+    def extract(self,link:str,**kwargs) -> None:
+        pass
 

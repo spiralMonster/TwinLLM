@@ -1,0 +1,2 @@
+class LinkedInScrappingException(Exception):
+    pass

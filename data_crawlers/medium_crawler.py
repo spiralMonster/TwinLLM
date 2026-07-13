@@ -1,0 +1,94 @@
+import time
+from loguru import logger
+
+from selenium.webdriver.common.by import By
+
+from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+
+from document_categories.nosql_db_document_categories.article_document import ArticleDocument
+
+from utils.exceptions.medium_scrapping_exception import MediumArticleScrappingException
+
+
+class MediumCrawler(BaseSeleniumCrawler):
+    document_model=ArticleDocument
+
+    def extract(self,link:str,**kwargs) -> None:
+        old_model=self.document_model.find(
+            link=link
+        )
+
+        if old_model is not None:
+            logger.info("Article already exists in database.")
+            return
+
+        user=kwargs["user"]
+
+        try:
+            logger.info(f"Scraping the Medium article: {link}")
+
+            self.driver.get(link)
+            time.sleep(3)
+
+            title_element=self.driver.find_element(
+                By.CSS_SELECTOR,
+                "h1.pw-post-title"
+            )
+            title=title_element.text.strip()
+
+            try:
+                description_element=self.driver.find_elemenet(
+                    By.CSS_SELECTOR,
+                    "h2.pw-subtitle-paragraph"
+                )
+                description=description_element.text.strip()
+
+            except Exception as e:
+                logger.info("No description exists")
+                description=None
+
+
+            date_element=self.driver.find_element(
+                By.CSS_SELECTOR,
+                'span[data-testid="storyPublishDate"]'
+            )
+            published_date=date_element.text.strip()
+
+            paragraph_elements=self.driver.find_elements(
+                By.CSS_SELECTOR,
+                "p.pw-post-body-paragraph"
+            )
+
+            paragraph=""
+            for elem in paragraph_elements:
+                text=elem.text.strip()
+                if text:
+                    paragraph+=text
+                    paragraph+=" "
+
+
+
+            instance=self.document_model(
+                content=paragraph,
+                platform="Medium",
+                author_id=user.id,
+                author_full_name=user.full_name,
+                title=title,
+                description=description,
+                link=link,
+                published_date=published_date
+            )
+
+            instance.save()
+
+        except Exception as e:
+            logger.info(f"Exception encountered: {e}")
+            logger.info(f"While scrapping medium article: {link}")
+
+            raise MediumArticleScrappingException("Exception encountered!!!")
+
+
+        logger.info(f"Successfully scrapped and saved the medium article: {link} of user: {user.full_name}")
+        self.driver.close()
+
+
