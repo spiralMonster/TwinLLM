@@ -1,4 +1,5 @@
 import time
+import statistics
 from loguru import logger
 
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -7,7 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By,ByType
 
-from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.post_document import PostDocument
 
@@ -101,7 +102,7 @@ class LinkedinCrawler(BaseSeleniumCrawler):
         logger.info("Successfully logged into LinkedIN.")
 
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         User=kwargs["user"]
 
         try:
@@ -147,6 +148,9 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
             self.driver.close()
 
+            num_successful_crawls=0
+            len_crawled_content=[]
+
             for doc,date in zip(docs,dates):
                 old_document_model=self.document_model.find(
                     content=doc,
@@ -169,6 +173,10 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
                 instance.save()
 
+                num_successful_crawls+=1
+                len_post=len(doc.split(" "))
+                len_crawled_content.append(len_post)
+
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
             logger.info(f"While scrapping LinkedIn link: {link} of user: {User.full_name}")
@@ -179,6 +187,23 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
         logger.info(f"Successfully scrapped and saved the LinkedIn posts for user: {User.full_name}")
         self.driver.close()
+
+        mean_content_length=int(statistics.mean(len_crawled_content))
+        median_content_length=int(statistics.median(len_crawled_content))
+        min_content_length=int(min(len_crawled_content))
+        max_content_length=int(max(len_crawled_content))
+
+        metadata={
+            "num_successful_crawls":num_successful_crawls,
+            "mean_content_length":mean_content_length,
+            "median_content_length":median_content_length,
+            "min_content_length":min_content_length,
+            "max_content_length":max_content_length
+        }
+
+        return metadata
+
+
 
 
 

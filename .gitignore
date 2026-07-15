@@ -6,5 +6,5 @@
 .threads_profile/
 __pycache__/
 utils/__pycache__/
-data_crawlers/__pycache__/
+data_crawlers/crawlers/__pycache__/
 .env

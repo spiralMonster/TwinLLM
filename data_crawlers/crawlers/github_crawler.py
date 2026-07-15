@@ -1,10 +1,11 @@
 import shutil
 import os
 import subprocess
+import statistics
 from loguru import logger
 from tempfile import mkdtemp
 
-from data_crawlers.base_crawler import BaseCrawler
+from data_crawlers.crawlers.base_crawler import BaseCrawler
 from document_categories.nosql_db_document_categories.repository_document import RepositoryDocument
 
 from utils.extension_to_programming_language import ExtensionToProgrammingLanguage
@@ -22,13 +23,13 @@ class GitHubCrawler(BaseCrawler):
         self._ignore=ignore
 
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         old_document_model=self.document_model.find(link=link)
 
         if old_document_model is not None:
             logger.info("Repository Document already exists in database.")
 
-            return
+            return {}
 
         user=kwargs["user"]
         logger.info(f"Scrapping the Github repository: {link} of user: {user.full_name}")
@@ -44,11 +45,12 @@ class GitHubCrawler(BaseCrawler):
             tree={}
             programming_languages_used=[]
             file_count=0
+            len_crawls=[]
 
             for root,_,files in os.walk(repo_path):
-                dir=root.replace(repo_path,"").lstrip("/")
+                directory=root.replace(repo_path,"").lstrip("/")
 
-                if dir.startswith(self._ignore):
+                if directory.startswith(self._ignore):
                     continue
 
 
@@ -66,9 +68,12 @@ class GitHubCrawler(BaseCrawler):
 
 
                     file_count+=1
-                    file_path=os.path.join(dir,file)
+                    file_path=os.path.join(directory,file)
                     with open(os.path.join(root,file),"r",errors="ignore") as f:
                         tree[file_path]=f.read()
+
+                    len_file=len(tree[file_path].split(" "))
+                    len_crawls.append(len_file)
 
 
             programming_languages_used=" ".join(programming_languages_used)
@@ -95,5 +100,20 @@ class GitHubCrawler(BaseCrawler):
 
 
         logger.info(f"Finished scrapping the repository {repo_name} of user {user.full_name}")
+
+        mean_content_length=int(statistics.mean(len_crawls))
+        median_content_length=int(statistics.median(len_crawls))
+        min_content_length=int(min(len_crawls))
+        max_content_length=int(max(len_crawls))
+
+        metadata={
+            "num_successful_crawls":file_count,
+            "mean_content_length":mean_content_length,
+            "median_content_length":median_content_length,
+            "min_content_length":min_content_length,
+            "max_content_length":max_content_length
+        }
+
+        return metadata
 
 

@@ -1,10 +1,11 @@
 import time
+import statistics
 from loguru import logger
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.article_document import ArticleDocument
 
@@ -43,7 +44,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
         return article_links
 
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         user=kwargs["user"]
 
         logger.info(f"Scrapping the articles of user: {user.full_name}")
@@ -51,6 +52,9 @@ class SubstackCrawler(BaseSeleniumCrawler):
             link=link,
             user=user.full_name
         )
+
+        num_successful_crawls=[]
+        len_crawls=[]
 
         for article_url in article_links:
             old_document_model=self.document_model.find(
@@ -130,6 +134,12 @@ class SubstackCrawler(BaseSeleniumCrawler):
 
                 logger.info(f"Saved substack article: {article_url} in database.")
 
+                num_successful_crawls+=1
+
+                length_article=len(paragraph.split(" "))
+                len_crawls.append(length_article)
+
+
 
             except Exception as e:
                 logger.info(f"Exception encountered: {e}")
@@ -141,6 +151,21 @@ class SubstackCrawler(BaseSeleniumCrawler):
         logger.info(f"Successfully scrapped and saved substack articles of user: {user.full_name}")
 
         self.driver.close()
+
+        mean_content_length=int(statistics.mean(len_crawls))
+        median_content_length=int(statistics.median(len_crawls))
+        min_content_length=int(min(len_crawls))
+        max_content_length=int(max(len_crawls))
+
+        metadata={
+            "num_successful_crawls":num_successful_crawls,
+            "mean_content_length":mean_content_length,
+            "median_content_length":median_content_length,
+            "min_content_length":min_content_length,
+            "max_content_length":max_content_length
+        }
+
+        return metadata
 
 
 

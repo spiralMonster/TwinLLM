@@ -5,7 +5,7 @@ import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from data_crawlers.base_crawler import BaseCrawler
+from data_crawlers.crawlers.base_crawler import BaseCrawler
 
 chromedriver_autoinstaller.install()
 
@@ -61,6 +61,6 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
             last_height=new_height
             current_scroll+=1
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         pass
 

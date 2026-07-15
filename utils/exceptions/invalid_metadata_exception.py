@@ -1,0 +1,2 @@
+class InvalidMetaDataException(Exception):
+    pass

@@ -1,0 +1,3 @@
+class NoCrawlerFoundException(Exception):
+    pass
+

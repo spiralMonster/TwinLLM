@@ -3,7 +3,7 @@ from loguru import logger
 
 from selenium.webdriver.common.by import By
 
-from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.article_document import ArticleDocument
 
@@ -13,14 +13,14 @@ from utils.exceptions.medium_scrapping_exception import MediumArticleScrappingEx
 class MediumCrawler(BaseSeleniumCrawler):
     document_model=ArticleDocument
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         old_model=self.document_model.find(
             link=link
         )
 
         if old_model is not None:
             logger.info("Article already exists in database.")
-            return
+            return {}
 
         user=kwargs["user"]
 
@@ -81,6 +81,9 @@ class MediumCrawler(BaseSeleniumCrawler):
 
             instance.save()
 
+            num_successful_crawls=1
+            article_length=(paragraph.split(" "))
+
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
             logger.info(f"While scrapping medium article: {link}")
@@ -90,5 +93,15 @@ class MediumCrawler(BaseSeleniumCrawler):
 
         logger.info(f"Successfully scrapped and saved the medium article: {link} of user: {user.full_name}")
         self.driver.close()
+
+        metadata={
+            "num_successful_crawls":num_successful_crawls,
+            "mean_content_length":article_length,
+            "median_content_length":article_length,
+            "min_content_length":article_length,
+            "max_content_length":article_length,
+        }
+
+        return metadata
 
 

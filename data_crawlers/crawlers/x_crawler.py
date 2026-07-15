@@ -1,11 +1,12 @@
 import time
+import statistics
 from loguru import logger
 from selenium.webdriver.chrome.options import Options
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException,StaleElementReferenceException
 
-from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.tweet_document import TweetDocument
 
@@ -121,7 +122,7 @@ class XCrawler(BaseSeleniumCrawler):
 
 
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         user=kwargs["user"]
         logger.info(f"Scrapping the X tweets of user: {user.full_name}")
 
@@ -130,6 +131,9 @@ class XCrawler(BaseSeleniumCrawler):
         extracted_tweets=self.extract_tweets(link=link)
 
         try:
+            num_successful_crawls=0
+            len_crawls=[]
+
             for (date,tweet) in extracted_tweets:
                 old_document_model=self.document_model.find(
                     content=tweet,
@@ -153,13 +157,39 @@ class XCrawler(BaseSeleniumCrawler):
 
                 instance.save()
 
+                num_successful_crawls+=1
 
-            logger.info(f"Successfully scrapped and saved the X tweets in the database of user: {user.full_name}")
+                len_tweet=len(tweet.split(" "))
+                len_crawls.append(len_tweet)
 
 
         except Exception as e:
             logger.exception(f"Exception: {e}")
             raise MongoDBException("Failed saving the instance in MongoDB!!!!")
+
+
+
+        logger.info(f"Successfully scrapped and saved the X tweets in the database of user: {user.full_name}")
+        self.driver.close()
+
+        mean_content_length=int(statistics.mean(len_crawls))
+        median_content_length=int(statistics.median(len_crawls))
+        min_content_length=int(min(len_crawls))
+        max_content_length=int(max(len_crawls))
+
+        metadata={
+            "num_successful_crawls":num_successful_crawls,
+            "mean_content_length":mean_content_length,
+            "median_content_length":median_content_length,
+            "min_content_length":min_content_length,
+            "max_content_length":max_content_length
+        }
+
+        return metadata
+
+
+
+
 
 
 

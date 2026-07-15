@@ -1,11 +1,12 @@
 import os
 import time
+import statistics
 from loguru import logger
 from selenium.webdriver.chrome.options import Options
 
 from selenium.webdriver.common.by import By
 
-from data_crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.tweet_document import TweetDocument
 
@@ -113,7 +114,7 @@ class ThreadCrawler(BaseSeleniumCrawler):
 
 
 
-    def extract(self,link:str,**kwargs) -> None:
+    def extract(self,link:str,**kwargs) -> dict:
         if os.path.isdir(".threads_profile"):
             logger.info("Already logged in Threads.")
 
@@ -131,6 +132,9 @@ class ThreadCrawler(BaseSeleniumCrawler):
         )
 
         try:
+            num_successful_crawls=0
+            len_crawls=[]
+
             for (date,thread) in extracted_threads:
                 old_document_model=self.document_model.find(
                     content=thread,
@@ -155,12 +159,37 @@ class ThreadCrawler(BaseSeleniumCrawler):
 
                 instance.save()
 
-            logger.info(f"Successfully scrapped and saved the threads in database of user: {user.full_name}")
+                num_successful_crawls+=1
+
+                len_thread=len(thread.split(" "))
+                len_crawls.append(len_thread)
+
 
 
         except Exception as e:
             logger.exception(f"Exception encountered: {e}")
             raise MongoDBException(f"Exception encountered while saving threads in MongoDB of user: {user.full_name}")
+
+
+
+        logger.info(f"Successfully scrapped and saved the threads in database of user: {user.full_name}")
+        self.driver.close()
+
+
+        mean_content_length=int(statistics.mean(len_crawls))
+        median_content_length=int(statistics.median(len_crawls))
+        min_content_length=int(min(len_crawls))
+        max_content_length=int(max(len_crawls))
+
+        metadata={
+            "num_successful_crawls":num_successful_crawls,
+            "mean_content_length":mean_content_length,
+            "median_content_length":median_content_length,
+            "min_content_length":min_content_length,
+            "max_content_length":max_content_length
+        }
+
+        return metadata
 
 
 
