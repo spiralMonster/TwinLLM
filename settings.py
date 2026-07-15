@@ -15,6 +15,10 @@ class SettingsClass(BaseSettings):
     LINKEDIN_USERNAME:str
     LINKEDIN_PASSWORD:str
 
+    #Thread Credentials:
+    THREADS_USERNAME:str
+    THREADS_PASSWORD:str
+
     #AWS Credentials:
     AWS_REGION:str
     AWS_ACCESS_KEY:str

@@ -3,6 +3,7 @@
 .linkedin_profile/
 .substack_profile/
 .twitter_profile/
+.threads_profile/
 __pycache__/
 utils/__pycache__/
 data_crawlers/__pycache__/
