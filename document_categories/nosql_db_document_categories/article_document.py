@@ -3,7 +3,6 @@ from document_categories.nosql_db_document_categories.base_document import Docum
 
 
 class ArticleDocument(Document):
-    content:str|None = None
     username:str|None = None
     title:str|None = None
     description:str|None = None

@@ -11,8 +11,7 @@ chromedriver_autoinstaller.install()
 
 
 class BaseSeleniumCrawler(BaseCrawler,ABC):
-    def __init__(self,scroll_limit:int=5) ->None:
-        self.scroll_limit=scroll_limit
+    def __init__(self) ->None:
 
         options=webdriver.ChromeOptions()
 
@@ -39,7 +38,7 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
         pass
 
 
-    def scroll_page(self) -> None:
+    def scroll_page(self,scroll_limit:int=5) -> None:
         current_scroll=0
 
         last_height=self.driver.execute_script(
@@ -56,7 +55,7 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
                 "return document.body.scrollHeight"
             )
 
-            if new_height==last_height or (self.scroll_limit and current_scroll>=self.scroll_limit):
+            if new_height==last_height or (scroll_limit and current_scroll>=scroll_limit):
                 break
 
             last_height=new_height

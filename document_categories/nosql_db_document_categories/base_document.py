@@ -5,7 +5,7 @@ from document_categories.nosql_db_document_categories.no_sql_base_document impor
 
 
 class Document(NoSQLBaseDocument,ABC):
-    content: dict
+    content: str
     platform: str
     author_id: UUID4 = Field(alias="author_id")
     author_full_name: str = Field(alias="author_full_name")

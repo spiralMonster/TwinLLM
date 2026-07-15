@@ -2,6 +2,7 @@
 .ruff_cache/
 .linkedin_profile/
 .substack_profile/
+.twitter_profile/
 __pycache__/
 utils/__pycache__/
 data_crawlers/__pycache__/

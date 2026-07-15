@@ -1,0 +1,2 @@
+class XScrappingException(Exception):
+    pass

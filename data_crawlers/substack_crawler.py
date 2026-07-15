@@ -60,7 +60,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
             if old_document_model is not None:
                 logger.info(f"Article: {article_url} already exists in database.")
 
-                return
+                continue
 
             logger.info(f"Scrapping substack article: {article_url} of user: {user.full_name}")
 
