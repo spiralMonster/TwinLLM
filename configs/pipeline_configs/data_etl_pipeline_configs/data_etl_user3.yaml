@@ -1,0 +1,28 @@
+parameters:
+  user_full_name: Andrej Karpathy
+  links:
+    #Github
+    - https://github.com/karpathy/nanoGPT
+    - https://github.com/karpathy/nanochat
+    - https://github.com/karpathy/llm.c
+    - https://github.com/karpathy/llm-council
+    - https://github.com/karpathy/micrograd
+
+    #Threads
+    - https://www.threads.com/@karpathy
+
+    #X
+    - https://x.com/karpathy/highlights
+
+    #Medium
+    - https://karpathy.medium.com/software-2-0-a64152b37c35
+    - https://karpathy.medium.com/alphago-in-context-c47718cb95a5
+    - https://karpathy.medium.com/icml-accepted-papers-institution-stats-bad8d2943f5d
+    - https://karpathy.medium.com/a-peek-at-trends-in-machine-learning-ab8a1085a106
+    - https://karpathy.medium.com/iclr-2017-vs-arxiv-sanity-d1488ac5c131
+    - https://karpathy.medium.com/virtual-reality-still-not-quite-there-again-5f51f2b43867
+    - https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b
+    
+
+
+

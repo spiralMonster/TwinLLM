@@ -122,20 +122,23 @@ class LinkedinCrawler(BaseSeleniumCrawler):
             self.scroll_page()
             time.sleep(2)
 
+            docs=[]
+            dates=[]
+
             doc_elements=self.driver.find_elements(By.CSS_SELECTOR,'span[dir="ltr"]')
             date_elements=self.driver.find_elements(By.CSS_SELECTOR,".update-components-actor__sub-description")
 
-            docs=[]
-            dates=[]
+            user_name=doc_elements[0].text.strip()
 
             ind=0
             date_ind=0
             num_docs=len(doc_elements)
             num_dates=len(date_elements)
 
-            if num_dates==num_docs//2:
-                user_name = doc_elements[0].text.strip()
+            print(f"Number of date elements: {num_dates}")
+            print(f"Number of doc elements: {num_docs}")
 
+            if num_dates==num_docs//2:
                 while ind<num_docs:
                     doc_ind=ind+1
 
@@ -143,13 +146,13 @@ class LinkedinCrawler(BaseSeleniumCrawler):
                     doc=doc_elements[doc_ind].text.strip()
                     date=date_elements[date_ind].text.strip().split(" ")[0]
 
+
                     if user==user_name:
                         docs.append(doc)
                         dates.append(date)
 
                     ind+=2
                     date_ind+=1
-
 
             else:
                 for elem in doc_elements:
@@ -164,37 +167,58 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
                 dates=dates[-len(docs):]
 
+                print(f"Number of date elements: {len(dates)}")
+                print(f"Number of doc elements: {len(docs)}")
+
+
+                # processed_docs=[]
+                # for doc in docs:
+                #     if len(doc.split(" "))<=2:
+                #         continue
+                #
+                #     else:
+                #         processed_docs.append(doc)
+                #
+                # processed_dates=dates[-len(processed_docs):]
+                #
+                # docs=processed_docs
+                # dates=processed_dates
+
 
             num_successful_crawls=0
             len_crawled_content=[]
 
             for doc,date in zip(docs,dates):
                 date=ConvertCodeToDate(date)
+                # old_document_model=self.document_model.find(
+                #     content=doc,
+                #     published_date=date
+                # )
+                #
+                # if old_document_model is not None:
+                #     logger.info("The LinkedIn Post already exists.")
+                #     continue
 
-                old_document_model=self.document_model.find(
-                    content=doc,
-                    published_date=date
-                )
 
-                if old_document_model is not None:
-                    logger.info("The LinkedIn Post already exists.")
-                    continue
-
-
-                instance=self.document_model(
-                    content=doc,
-                    platform="LinkedIn",
-                    author_id=User.id,
-                    author_full_name=User.full_name,
-                    published_date=date,
-                    link=link
-                )
-
-                instance.save()
+                # instance=self.document_model(
+                #     content=doc,
+                #     platform="LinkedIn",
+                #     author_id=User.id,
+                #     author_full_name=User.full_name,
+                #     published_date=date,
+                #     link=link
+                # )
+                #
+                # instance.save()
 
                 num_successful_crawls+=1
                 len_post=len(doc.split(" "))
                 len_crawled_content.append(len_post)
+
+                print(f"Post: {num_successful_crawls}")
+                print(f"Date: {date}")
+                print(f"Content: {doc}")
+                print(50*"-")
 
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
@@ -229,3 +253,32 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
 
 
+
+
+
+
+
+
+if __name__=="__main__":
+    from document_categories.nosql_db_document_categories.user_document import UserDocument
+
+    crawler=LinkedinCrawler()
+    link="https://www.linkedin.com/in/sundarpichai/recent-activity/all/"
+    user=UserDocument(
+        first_name="Sundar",
+        last_name="Pichai"
+    )
+
+    metadata=crawler.extract(link=link,user=user)
+    print(f"Metadata: {metadata}")
+
+
+
+
+
+# tree={}
+#
+# with open("data_crawlers/crawlers/github_crawler.py","r",errors="ignore") as file:
+#     tree["file"]=file.read().replace(" ", "")
+#
+# print(tree)

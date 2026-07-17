@@ -165,15 +165,16 @@ class ThreadCrawler(BaseSeleniumCrawler):
                 len_crawls.append(len_thread)
 
 
-
         except Exception as e:
             logger.exception(f"Exception encountered: {e}")
             raise MongoDBException(f"Exception encountered while saving threads in MongoDB of user: {user.full_name}")
 
 
+        finally:
+            self.driver.quit()
+
 
         logger.info(f"Successfully scrapped and saved the threads in database of user: {user.full_name}")
-        self.driver.close()
 
 
         mean_content_length=int(statistics.mean(len_crawls))

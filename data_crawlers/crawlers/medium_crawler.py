@@ -82,7 +82,7 @@ class MediumCrawler(BaseSeleniumCrawler):
             instance.save()
 
             num_successful_crawls=1
-            article_length=(paragraph.split(" "))
+            article_length=len(paragraph.split(" "))
 
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
@@ -91,8 +91,12 @@ class MediumCrawler(BaseSeleniumCrawler):
             raise MediumArticleScrappingException("Exception encountered!!!")
 
 
+        finally:
+            self.driver.quit()
+
+
         logger.info(f"Successfully scrapped and saved the medium article: {link} of user: {user.full_name}")
-        self.driver.close()
+
 
         metadata={
             "num_successful_crawls":num_successful_crawls,

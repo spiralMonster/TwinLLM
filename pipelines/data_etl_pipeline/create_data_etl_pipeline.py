@@ -6,7 +6,7 @@ from pipelines.data_etl_pipeline.steps.crawl_links import crawl_links
 
 
 @pipeline
-def get_data_etl_pipeline(user_full_name:str,links:list[str]) -> str:
+def run_data_etl_pipeline(user_full_name:str,links:list[str]) -> str:
     user=get_or_create_user(user_full_name=user_full_name)
     last_step=crawl_links(user=user,links=links)
 

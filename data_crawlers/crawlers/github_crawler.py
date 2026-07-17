@@ -18,7 +18,7 @@ class GitHubCrawler(BaseCrawler):
 
     def __init__(
             self,
-            ignore=(".git",".env",".toml",".lock",".png",".jpeg",".md",".txt",".json",".csv",".venv",".proto",".tfrecords")
+            ignore=(".git",".gitattributes",".env",".toml",".lock",".png",".jpeg",".jpg",".txt",".json",".csv",".venv",".proto",".tfrecords",".ipynb")
     ) -> None:
         self._ignore=ignore
 
@@ -62,7 +62,7 @@ class GitHubCrawler(BaseCrawler):
                     if ind!=-1:
                         file_extension=file[ind+1:]
                         programming_lang=ExtensionToProgrammingLanguage(extension=file_extension)
-                        if not programming_lang:
+                        if programming_lang:
                             if programming_lang not in programming_languages_used:
                                 programming_languages_used.append(programming_lang)
 
@@ -70,13 +70,14 @@ class GitHubCrawler(BaseCrawler):
                     file_count+=1
                     file_path=os.path.join(directory,file)
                     with open(os.path.join(root,file),"r",errors="ignore") as f:
-                        tree[file_path]=f.read()
+                        content=f.read()
+                        tree[file_path]=content
 
                     len_file=len(tree[file_path].split(" "))
                     len_crawls.append(len_file)
 
 
-            programming_languages_used=" ".join(programming_languages_used)
+            programming_languages_used=", ".join(programming_languages_used)
 
             instance=self.document_model(
                 content=tree,

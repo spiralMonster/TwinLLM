@@ -1,0 +1,12 @@
+parameters:
+  user_full_name: Sundar Pichai
+  links:
+    #LinkedIn
+    - https://www.linkedin.com/in/sundarpichai/recent-activity/all/
+
+    #X
+    - https://x.com/sundarpichai/highlights
+
+    #Threads
+    - https://www.threads.com/@sundarpichai
+

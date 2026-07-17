@@ -1,0 +1,11 @@
+parameters:
+  user_full_name: Satya Nadella
+  links:
+    #LinkedIn
+    - https://www.linkedin.com/in/satyanadella/recent-activity/all/
+
+    #Threads
+    - https://www.threads.com/@satyanadella
+
+    #X:
+    - https://x.com/satyanadella/highlights

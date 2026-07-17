@@ -27,6 +27,18 @@ class XCrawler(BaseSeleniumCrawler):
             self.driver.get(link)
             time.sleep(3)
 
+            driver_current_url=self.driver.current_url
+            if "highlights" in driver_current_url:
+                tweet_element_expr = 'div[data-testid="tweetText"]'
+                date_element_expr = "time"
+                author_element_expr = 'div[data-testid="User-Name"]'
+
+            else:
+                tweet_element_expr = 'div[class="font-chirp max-w-full whitespace-pre-wrap break-words text-text text-body font-normal"]'
+                date_element_expr = 'a[data-state="closed"]'
+                author_element_expr = 'div[data-slot="hover-card-trigger"]'
+
+
             scroll_ind=0
             tweets=[]
             dates=[]
@@ -66,7 +78,7 @@ class XCrawler(BaseSeleniumCrawler):
                 logger.info("Scrapping the tweets.")
                 tweet_elements=self.driver.find_elements(
                     By.CSS_SELECTOR,
-                    'div[data-testid="tweetText"]'
+                    tweet_element_expr
                 )
                 for elem in tweet_elements:
                     tweet=elem.text.strip()
@@ -77,7 +89,7 @@ class XCrawler(BaseSeleniumCrawler):
                 logger.info("Scrapping the tweet dates.")
                 date_elements=self.driver.find_elements(
                     By.CSS_SELECTOR,
-                    "time"
+                    date_element_expr
                 )
                 for elem in date_elements:
                     date=elem.text.strip()
@@ -88,7 +100,7 @@ class XCrawler(BaseSeleniumCrawler):
                 logger.info("Scrapping the tweet authors.")
                 author_names_elements=self.driver.find_elements(
                     By.CSS_SELECTOR,
-                    'div[data-testid="User-Name"]'
+                    author_element_expr
                 )
                 for elem in author_names_elements:
                     author=elem.text.split("\n")[0].strip()
@@ -167,10 +179,12 @@ class XCrawler(BaseSeleniumCrawler):
             logger.exception(f"Exception: {e}")
             raise MongoDBException("Failed saving the instance in MongoDB!!!!")
 
+        finally:
+            self.driver.quit()
 
 
         logger.info(f"Successfully scrapped and saved the X tweets in the database of user: {user.full_name}")
-        self.driver.close()
+
 
         mean_content_length=int(statistics.mean(len_crawls))
         median_content_length=int(statistics.median(len_crawls))
@@ -186,10 +200,3 @@ class XCrawler(BaseSeleniumCrawler):
         }
 
         return metadata
-
-
-
-
-
-
-

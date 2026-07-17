@@ -19,14 +19,18 @@ def _convert(day_date_code:str,date_code:str) -> int:
 
 
 def ConvertCodeToDays(day_date_code:str) -> int:
-    for date_code in code_config.keys():
-        if date_code in day_date_code:
-            num_days=_convert(day_date_code=day_date_code,date_code=date_code)
-            return num_days
+    if "h" in day_date_code:
+        return 0
+
+    else:
+        for date_code in code_config.keys():
+            if date_code in day_date_code:
+                num_days=_convert(day_date_code=day_date_code,date_code=date_code)
+                return num_days
 
 
-    logger.error("Invalid day_date_code!!!")
-    return 0
+        logger.error("Invalid day_date_code!!!")
+        return 0
 
 
 if __name__=="__main__":

@@ -7,4 +7,13 @@
 __pycache__/
 utils/__pycache__/
 data_crawlers/crawlers/__pycache__/
+utils/exceptions/__pycache__/
+document_categories/__pycache__/
+document_categories/nosql_db_document_categories/__pycache__/
+databases/mongodb/__pycache__/
+data_crawlers/__pycache__/
+pipelines/__pycache__/
+pipelines/data_etl_pipeline/__pycache__/
+pipelines/data_etl_pipeline/metadata/__pycache__/
+pipelines/data_etl_pipeline/steps/__pycache__/
 .env

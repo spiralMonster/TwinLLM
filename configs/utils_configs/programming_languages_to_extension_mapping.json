@@ -6,6 +6,7 @@
   "CSS": ["css"],
   "TypeScript": ["ts","tsx"],
   "C": ["c","h"],
+  "Cuda": ["cu"],
   "C++": ["cpp","cc","cxx","hpp"],
   "Jupyter Notebook": ["ipynb"],
   "YAML": ["yaml"],

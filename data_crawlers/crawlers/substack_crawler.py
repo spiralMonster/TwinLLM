@@ -39,7 +39,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
                 article_links.append(link)
 
 
-        logger.info(f"Number of Article links extracted successfully: {len(article_links)}")
+        logger.info(f"Number of Substack Article links extracted successfully: {len(article_links)}")
 
         return article_links
 
@@ -47,13 +47,15 @@ class SubstackCrawler(BaseSeleniumCrawler):
     def extract(self,link:str,**kwargs) -> dict:
         user=kwargs["user"]
 
+        username=link.split("/")[-2][1:]
+
         logger.info(f"Scrapping the articles of user: {user.full_name}")
         article_links=self.extract_article_links(
             link=link,
             user=user.full_name
         )
 
-        num_successful_crawls=[]
+        num_successful_crawls=0
         len_crawls=[]
 
         for article_url in article_links:
@@ -63,7 +65,6 @@ class SubstackCrawler(BaseSeleniumCrawler):
 
             if old_document_model is not None:
                 logger.info(f"Article: {article_url} already exists in database.")
-
                 continue
 
             logger.info(f"Scrapping substack article: {article_url} of user: {user.full_name}")
@@ -72,36 +73,39 @@ class SubstackCrawler(BaseSeleniumCrawler):
                 self.driver.get(article_url)
                 time.sleep(3)
 
-                username_element=self.driver.find_element(
-                    By.CSS_SELECTOR,
-                    'a[href^="https://substack.com/@"]'
-                )
-                username=username_element.get_attribute("href").split("/")[-1].strip()
+                try:
+                    title_element=self.driver.find_element(
+                        By.CSS_SELECTOR,
+                        'h1[class="post-title published title-X77sOw"]'
+                    )
+                    title=title_element.text.strip()
 
-
-                title_element=self.driver.find_elements(
-                    By.CSS_SELECTOR,
-                    'a[href*="/p/"]'
-                )[-1]
-                title=title_element.text.strip()
+                except Exception as e:
+                    logger.info("Failed to extract Title.")
+                    title=None
 
                 try:
-                    description_element=title_element.find_element(
-                        By.XPATH,
-                        "./following-sibling::div"
+                    description_element=self.driver.find_element(
+                        By.CSS_SELECTOR,
+                        'h3.subtitle'
                     )
                     description=description_element.text.strip()
 
                 except Exception as e:
-                    logger.exception("No description exists.")
+                    logger.info("Failed to extract description.")
                     description=None
 
 
-                date_element=username_element.find_element(
-                    By.XPATH,
-                    "./ancestor::div[2]/div[2]"
-                )
-                date=date_element.text.strip()
+                try:
+                    date_element=self.driver.find_element(
+                        By.CSS_SELECTOR,
+                        'div[aria-label="Post UFI"]'
+                    )
+                    date=date_element.text.split("\n")[1].strip()
+
+                except Exception as e:
+                    logger.info("Failed to extract Date.")
+                    date=None
 
 
                 paragraph_elements=self.driver.find_elements(
@@ -116,29 +120,36 @@ class SubstackCrawler(BaseSeleniumCrawler):
                         paragraph+=text
                         paragraph+=" "
 
+                paragraph=paragraph.strip()
 
-                instance=self.document_model(
-                    content=paragraph,
-                    platform="Substack",
-                    author_id=user.id,
-                    author_full_name=user.full_name,
-                    username=username,
-                    title=title,
-                    description=description,
-                    link=article_url,
-                    published_date=date
+                if not paragraph:
+                    logger.info("Failed to retrieve the article.")
+                    logger.info(f"Skipping the link: {article_url}")
+                    continue
 
-                )
 
-                instance.save()
+                else:
+                    instance=self.document_model(
+                        content=paragraph,
+                        platform="Substack",
+                        author_id=user.id,
+                        author_full_name=user.full_name,
+                        username=username,
+                        title=title,
+                        description=description,
+                        link=article_url,
+                        published_date=date
 
-                logger.info(f"Saved substack article: {article_url} in database.")
+                    )
 
-                num_successful_crawls+=1
+                    instance.save()
 
-                length_article=len(paragraph.split(" "))
-                len_crawls.append(length_article)
+                    logger.info(f"Saved substack article: {article_url} in database.")
 
+                    num_successful_crawls+=1
+
+                    length_article=len(paragraph.split(" "))
+                    len_crawls.append(length_article)
 
 
             except Exception as e:
@@ -149,8 +160,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
 
 
         logger.info(f"Successfully scrapped and saved substack articles of user: {user.full_name}")
-
-        self.driver.close()
+        self.driver.quit()
 
         mean_content_length=int(statistics.mean(len_crawls))
         median_content_length=int(statistics.median(len_crawls))
