@@ -29,7 +29,7 @@ class CrawlerDispatcher:
         parsed_domain=urlparse(domain)
         domain=parsed_domain.netloc
 
-        crawler_type=r"https://(www\.)?{}.*".format(re.escape(domain))
+        crawler_type=rf"https://([a-zA-Z0-9-]+\.)?{re.escape(domain)}(/.*)?$"
 
         self._crawlers[crawler_type]=crawler
 

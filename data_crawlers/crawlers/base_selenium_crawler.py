@@ -16,7 +16,6 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
         options=webdriver.ChromeOptions()
 
         options.add_argument("--no-sandbox")
-        options.add_argument("--headless=new")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--log-level=3")
         options.add_argument("--disable-popup-blocking")
@@ -61,6 +60,6 @@ class BaseSeleniumCrawler(BaseCrawler,ABC):
             last_height=new_height
             current_scroll+=1
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         pass
 

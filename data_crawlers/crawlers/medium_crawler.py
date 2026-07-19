@@ -13,14 +13,23 @@ from utils.exceptions.medium_scrapping_exception import MediumArticleScrappingEx
 class MediumCrawler(BaseSeleniumCrawler):
     document_model=ArticleDocument
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         old_model=self.document_model.find(
             link=link
         )
 
         if old_model is not None:
             logger.info("Article already exists in database.")
-            return {}
+
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
+
+            return "medium",metadata
 
         user=kwargs["user"]
 
@@ -30,11 +39,16 @@ class MediumCrawler(BaseSeleniumCrawler):
             self.driver.get(link)
             time.sleep(3)
 
-            title_element=self.driver.find_element(
-                By.CSS_SELECTOR,
-                "h1.pw-post-title"
-            )
-            title=title_element.text.strip()
+            try:
+                title_element=self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    "h1.pw-post-title"
+                )
+                title=title_element.text.strip()
+
+            except Exception as e:
+                logger.info("Failed to extract the title of the article.")
+                title=None
 
             try:
                 description_element=self.driver.find_elemenet(
@@ -44,15 +58,22 @@ class MediumCrawler(BaseSeleniumCrawler):
                 description=description_element.text.strip()
 
             except Exception as e:
-                logger.info("No description exists")
+                logger.info("Failed to extract the description of the article.")
                 description=None
 
 
-            date_element=self.driver.find_element(
-                By.CSS_SELECTOR,
-                'span[data-testid="storyPublishDate"]'
-            )
-            published_date=date_element.text.strip()
+            try:
+                date_element=self.driver.find_element(
+                    By.CSS_SELECTOR,
+                    'span[data-testid="storyPublishDate"]'
+                )
+                published_date=date_element.text.strip()
+
+
+            except Exception as e:
+                logger.info("Failed to extract the date of the article")
+                published_date=None
+
 
             paragraph_elements=self.driver.find_elements(
                 By.CSS_SELECTOR,
@@ -68,21 +89,32 @@ class MediumCrawler(BaseSeleniumCrawler):
 
 
 
-            instance=self.document_model(
-                content=paragraph,
-                platform="Medium",
-                author_id=user.id,
-                author_full_name=user.full_name,
-                title=title,
-                description=description,
-                link=link,
-                published_date=published_date
-            )
+            if paragraph:
+                instance=self.document_model(
+                    content=paragraph,
+                    platform="Medium",
+                    author_id=user.id,
+                    author_full_name=user.full_name,
+                    title=title,
+                    description=description,
+                    link=link,
+                    published_date=published_date
+                )
 
-            instance.save()
+                instance.save()
 
-            num_successful_crawls=1
-            article_length=len(paragraph.split(" "))
+                num_successful_crawls=1
+                article_length=len(paragraph.split(" "))
+
+                logger.info(f"Successfully scrapped and saved the medium article: {link} of user: {user.full_name}")
+
+            else:
+                num_successful_crawls=0
+                article_length=0
+
+                logger.info(f"Failed to scrape the medium article: {link} of user: {user.full_name}")
+
+
 
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
@@ -95,9 +127,6 @@ class MediumCrawler(BaseSeleniumCrawler):
             self.driver.quit()
 
 
-        logger.info(f"Successfully scrapped and saved the medium article: {link} of user: {user.full_name}")
-
-
         metadata={
             "num_successful_crawls":num_successful_crawls,
             "mean_content_length":article_length,
@@ -106,6 +135,6 @@ class MediumCrawler(BaseSeleniumCrawler):
             "max_content_length":article_length,
         }
 
-        return metadata
+        return "medium",metadata
 
 

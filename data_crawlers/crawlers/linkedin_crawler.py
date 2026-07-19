@@ -104,7 +104,7 @@ class LinkedinCrawler(BaseSeleniumCrawler):
         logger.info("Successfully logged into LinkedIN.")
 
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         User=kwargs["user"]
 
         try:
@@ -196,6 +196,10 @@ class LinkedinCrawler(BaseSeleniumCrawler):
                 len_post=len(doc.split(" "))
                 len_crawled_content.append(len_post)
 
+
+            logger.info(f"Successfully scrapped and saved {num_successful_crawls} LinkedIn posts for user: {User.full_name}")
+
+
         except Exception as e:
             logger.info(f"Exception encountered: {e}")
             logger.info(f"While scrapping LinkedIn link: {link} of user: {User.full_name}")
@@ -208,22 +212,32 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
 
 
-        logger.info(f"Successfully scrapped and saved the LinkedIn posts for user: {User.full_name}")
+        if num_successful_crawls:
+            mean_content_length=int(statistics.mean(len_crawled_content))
+            median_content_length=int(statistics.median(len_crawled_content))
+            min_content_length=int(min(len_crawled_content))
+            max_content_length=int(max(len_crawled_content))
 
-        mean_content_length=int(statistics.mean(len_crawled_content))
-        median_content_length=int(statistics.median(len_crawled_content))
-        min_content_length=int(min(len_crawled_content))
-        max_content_length=int(max(len_crawled_content))
+            metadata={
+                "num_successful_crawls":num_successful_crawls,
+                "mean_content_length":mean_content_length,
+                "median_content_length":median_content_length,
+                "min_content_length":min_content_length,
+                "max_content_length":max_content_length
+            }
 
-        metadata={
-            "num_successful_crawls":num_successful_crawls,
-            "mean_content_length":mean_content_length,
-            "median_content_length":median_content_length,
-            "min_content_length":min_content_length,
-            "max_content_length":max_content_length
-        }
+        else:
+            logger.info("No LinkedIn post extracted.")
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
 
-        return metadata
+
+        return "linkedin",metadata
 
 
 

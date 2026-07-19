@@ -1,6 +1,5 @@
 from loguru import logger
 from tqdm import tqdm
-from urllib.parse import urlparse
 from typing import Annotated
 
 from zenml import step,get_step_context
@@ -15,12 +14,11 @@ from pipelines.data_etl_pipeline.metadata.get_crawl_links_metadata import _get_m
 def _crawl_link(dispatcher: CrawlerDispatcher,link:str,user:UserDocument) -> tuple[str,dict]:
     crawler=dispatcher.get_crawler(url=link)
 
-    crawler_domain=urlparse(link).netloc
-
-    crawler_metadata=crawler.extract(
+    crawler_domain,crawler_metadata=crawler.extract(
         link=link,
         user=user
     )
+
 
     return crawler_domain,crawler_metadata
 

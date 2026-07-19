@@ -111,17 +111,24 @@ class XCrawler(BaseSeleniumCrawler):
                 scroll_ind+=1
 
 
-            author_name=author_names[0]
-            final_tweets=[]
-            final_dates=[]
+            if author_names:
+                author_name=author_names[0]
+                final_tweets=[]
+                final_dates=[]
 
-            for date,author,tweet in zip(dates,author_names,tweets):
-                if author==author_name:
-                    final_dates.append(date)
-                    final_tweets.append(tweet)
+                for date,author,tweet in zip(dates,author_names,tweets):
+                    if author==author_name:
+                        final_dates.append(date)
+                        final_tweets.append(tweet)
 
 
-            result=list(zip(final_dates,final_tweets))
+                result=list(zip(final_dates,final_tweets))
+
+
+            else:
+                logger.info("Failed to retrieve author name.")
+                result=list(zip(dates,tweets))
+
 
             return result
 
@@ -134,7 +141,7 @@ class XCrawler(BaseSeleniumCrawler):
 
 
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         user=kwargs["user"]
         logger.info(f"Scrapping the X tweets of user: {user.full_name}")
 
@@ -183,20 +190,31 @@ class XCrawler(BaseSeleniumCrawler):
             self.driver.quit()
 
 
-        logger.info(f"Successfully scrapped and saved the X tweets in the database of user: {user.full_name}")
+        logger.info(f"Successfully scrapped and saved {num_successful_crawls} X tweets in the database of user: {user.full_name}")
 
 
-        mean_content_length=int(statistics.mean(len_crawls))
-        median_content_length=int(statistics.median(len_crawls))
-        min_content_length=int(min(len_crawls))
-        max_content_length=int(max(len_crawls))
+        if num_successful_crawls:
+            mean_content_length=int(statistics.mean(len_crawls))
+            median_content_length=int(statistics.median(len_crawls))
+            min_content_length=int(min(len_crawls))
+            max_content_length=int(max(len_crawls))
 
-        metadata={
-            "num_successful_crawls":num_successful_crawls,
-            "mean_content_length":mean_content_length,
-            "median_content_length":median_content_length,
-            "min_content_length":min_content_length,
-            "max_content_length":max_content_length
-        }
+            metadata={
+                "num_successful_crawls":num_successful_crawls,
+                "mean_content_length":mean_content_length,
+                "median_content_length":median_content_length,
+                "min_content_length":min_content_length,
+                "max_content_length":max_content_length
+            }
 
-        return metadata
+        else:
+            logger.info("No tweet extracted.")
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
+
+        return "x",metadata

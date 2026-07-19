@@ -6,6 +6,6 @@ class BaseCrawler(ABC):
     document_model: type[NoSQLBaseDocument]
 
     @abstractmethod
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         pass
 

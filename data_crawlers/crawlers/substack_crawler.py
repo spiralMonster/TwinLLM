@@ -44,7 +44,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
         return article_links
 
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         user=kwargs["user"]
 
         username=link.split("/")[-2][1:]
@@ -159,23 +159,34 @@ class SubstackCrawler(BaseSeleniumCrawler):
                 raise SubstackScrappingException("Exception encountered.")
 
 
-        logger.info(f"Successfully scrapped and saved substack articles of user: {user.full_name}")
+        logger.info(f"Successfully scrapped and saved {num_successful_crawls} substack articles of user: {user.full_name}")
         self.driver.quit()
 
-        mean_content_length=int(statistics.mean(len_crawls))
-        median_content_length=int(statistics.median(len_crawls))
-        min_content_length=int(min(len_crawls))
-        max_content_length=int(max(len_crawls))
+        if num_successful_crawls:
+            mean_content_length=int(statistics.mean(len_crawls))
+            median_content_length=int(statistics.median(len_crawls))
+            min_content_length=int(min(len_crawls))
+            max_content_length=int(max(len_crawls))
 
-        metadata={
-            "num_successful_crawls":num_successful_crawls,
-            "mean_content_length":mean_content_length,
-            "median_content_length":median_content_length,
-            "min_content_length":min_content_length,
-            "max_content_length":max_content_length
-        }
+            metadata={
+                "num_successful_crawls":num_successful_crawls,
+                "mean_content_length":mean_content_length,
+                "median_content_length":median_content_length,
+                "min_content_length":min_content_length,
+                "max_content_length":max_content_length
+            }
 
-        return metadata
+        else:
+            logger.info("No substack article extracted.")
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
+
+        return "substack",metadata
 
 
 

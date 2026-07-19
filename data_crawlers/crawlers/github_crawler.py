@@ -23,18 +23,28 @@ class GitHubCrawler(BaseCrawler):
         self._ignore=ignore
 
 
-    def extract(self,link:str,**kwargs) -> dict:
+    def extract(self,link:str,**kwargs) -> tuple[str,dict]:
         old_document_model=self.document_model.find(link=link)
 
         if old_document_model is not None:
             logger.info("Repository Document already exists in database.")
 
-            return {}
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
+
+            return "github",metadata
 
         user=kwargs["user"]
         logger.info(f"Scrapping the Github repository: {link} of user: {user.full_name}")
 
         repo_name=link.rstrip("/").split("/")[-1]
+
+        current_dir=os.getcwd()
         local_temp=mkdtemp()
 
         try:
@@ -45,6 +55,7 @@ class GitHubCrawler(BaseCrawler):
             tree={}
             programming_languages_used=[]
             file_count=0
+            num_successful_crawls=0
             len_crawls=[]
 
             for root,_,files in os.walk(repo_path):
@@ -71,10 +82,13 @@ class GitHubCrawler(BaseCrawler):
                     file_path=os.path.join(directory,file)
                     with open(os.path.join(root,file),"r",errors="ignore") as f:
                         content=f.read()
-                        tree[file_path]=content
 
-                    len_file=len(tree[file_path].split(" "))
-                    len_crawls.append(len_file)
+                    if content:
+                        tree[file_path]=content
+                        num_successful_crawls+=1
+
+                        len_file=len(tree[file_path].split(" "))
+                        len_crawls.append(len_file)
 
 
             programming_languages_used=", ".join(programming_languages_used)
@@ -98,23 +112,36 @@ class GitHubCrawler(BaseCrawler):
 
         finally:
             shutil.rmtree(local_temp)
+            os.chdir(current_dir)
 
 
         logger.info(f"Finished scrapping the repository {repo_name} of user {user.full_name}")
 
-        mean_content_length=int(statistics.mean(len_crawls))
-        median_content_length=int(statistics.median(len_crawls))
-        min_content_length=int(min(len_crawls))
-        max_content_length=int(max(len_crawls))
+        if num_successful_crawls:
+            mean_content_length=int(statistics.mean(len_crawls))
+            median_content_length=int(statistics.median(len_crawls))
+            min_content_length=int(min(len_crawls))
+            max_content_length=int(max(len_crawls))
 
-        metadata={
-            "num_successful_crawls":file_count,
-            "mean_content_length":mean_content_length,
-            "median_content_length":median_content_length,
-            "min_content_length":min_content_length,
-            "max_content_length":max_content_length
-        }
+            metadata={
+                "num_successful_crawls":num_successful_crawls,
+                "mean_content_length":mean_content_length,
+                "median_content_length":median_content_length,
+                "min_content_length":min_content_length,
+                "max_content_length":max_content_length
+            }
 
-        return metadata
+
+        else:
+            logger.info("No file extracted from github.")
+            metadata={
+                "num_successful_crawls":0,
+                "mean_content_length":0,
+                "median_content_length":0,
+                "min_content_length":0,
+                "max_content_length":0
+            }
+
+        return "github",metadata
 
 
