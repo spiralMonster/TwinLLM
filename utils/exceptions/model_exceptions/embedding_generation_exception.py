@@ -1,0 +1,2 @@
+class EmbeddingGenerationException(Exception):
+    pass

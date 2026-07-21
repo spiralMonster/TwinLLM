@@ -9,7 +9,7 @@ from data_crawlers.crawlers.base_crawler import BaseCrawler
 from document_categories.nosql_db_document_categories.repository_document import RepositoryDocument
 
 from utils.extension_to_programming_language import ExtensionToProgrammingLanguage
-from utils.exceptions.repository_crawling_exception import RepositoryCrawlingException
+from utils.exceptions.crawler_exceptions.repository_crawling_exception import RepositoryCrawlingException
 
 
 

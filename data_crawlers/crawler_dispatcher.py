@@ -10,7 +10,7 @@ from data_crawlers.crawlers.substack_crawler import SubstackCrawler
 from data_crawlers.crawlers.x_crawler import XCrawler
 from data_crawlers.crawlers.thread_crawler import ThreadCrawler
 
-from utils.exceptions.no_crawler_found_exception import NoCrawlerFoundException
+from utils.exceptions.crawler_exceptions.no_crawler_found_exception import NoCrawlerFoundException
 
 
 class CrawlerDispatcher:

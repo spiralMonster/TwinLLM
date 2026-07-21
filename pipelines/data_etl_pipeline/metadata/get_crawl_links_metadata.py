@@ -1,4 +1,4 @@
-from utils.exceptions.invalid_metadata_exception import InvalidMetaDataException
+from utils.exceptions.general_exceptions.invalid_metadata_exception import InvalidMetaDataException
 
 
 def combine_metadata(metadata1:dict,metadata2:dict) -> dict:

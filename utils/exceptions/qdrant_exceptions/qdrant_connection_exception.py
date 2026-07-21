@@ -1,0 +1,2 @@
+class QdrantConnectionException(Exception):
+    pass

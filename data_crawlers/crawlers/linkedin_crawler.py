@@ -16,8 +16,8 @@ from settings import Settings
 
 from utils.convert_date_codes_to_date import ConvertCodeToDate
 
-from utils.exceptions.login_exception import LoginException
-from utils.exceptions.linkedin_scrapping_exception import LinkedInScrappingException
+from utils.exceptions.general_exceptions.login_exception import LoginException
+from utils.exceptions.crawler_exceptions.linkedin_scrapping_exception import LinkedInScrappingException
 
 
 

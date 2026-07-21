@@ -1,0 +1,2 @@
+class FindDocumentException(Exception):
+    pass

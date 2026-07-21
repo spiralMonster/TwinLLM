@@ -10,8 +10,8 @@ from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.tweet_document import TweetDocument
 
-from utils.exceptions.x_scrapping_exception import XScrappingException
-from utils.exceptions.mongo_database_exception import MongoDBException
+from utils.exceptions.crawler_exceptions.x_scrapping_exception import XScrappingException
+from utils.exceptions.mongodb_exceptions.mongo_database_exception import MongoDBException
 
 
 class XCrawler(BaseSeleniumCrawler):

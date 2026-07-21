@@ -11,6 +11,20 @@ class SettingsClass(BaseSettings):
     MONGODB_DATABASE_HOST: str
     MONGODB_DATABASE_NAME: str
 
+    #Qdrant Configs:
+    USE_QDRANT_CLOUD:bool
+    QDRANT_API_KEY: str
+    QDRANT_CLOUD_URL:str
+
+    QDRANT_DATABASE_HOST:str
+    QDRANT_DATABASE_PORT:str
+
+
+    #Embedding Model Configs:
+    EMBEDDING_MODEL_ID:str
+    EMBEDDING_MODEL_DEVICE:str
+
+
     #LinkedIn Credentials:
     LINKEDIN_USERNAME:str
     LINKEDIN_PASSWORD:str

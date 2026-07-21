@@ -12,9 +12,9 @@ from document_categories.nosql_db_document_categories.tweet_document import Twee
 
 from settings import Settings
 
-from utils.exceptions.login_exception import LoginException
-from utils.exceptions.thread_scrapping_exception import ThreadScrappingException
-from utils.exceptions.mongo_database_exception import MongoDBException
+from utils.exceptions.general_exceptions.login_exception import LoginException
+from utils.exceptions.crawler_exceptions.thread_scrapping_exception import ThreadScrappingException
+from utils.exceptions.mongodb_exceptions.mongo_database_exception import MongoDBException
 
 
 class ThreadCrawler(BaseSeleniumCrawler):

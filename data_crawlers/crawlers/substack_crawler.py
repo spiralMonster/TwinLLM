@@ -9,7 +9,7 @@ from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.article_document import ArticleDocument
 
-from utils.exceptions.substack_scrapping_exception import SubstackScrappingException
+from utils.exceptions.crawler_exceptions.substack_scrapping_exception import SubstackScrappingException
 
 
 class SubstackCrawler(BaseSeleniumCrawler):

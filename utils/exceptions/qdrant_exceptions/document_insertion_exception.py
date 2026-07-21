@@ -1,0 +1,2 @@
+class DocumentInsertionException(Exception):
+    pass

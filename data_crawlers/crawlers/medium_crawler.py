@@ -7,7 +7,7 @@ from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.article_document import ArticleDocument
 
-from utils.exceptions.medium_scrapping_exception import MediumArticleScrappingException
+from utils.exceptions.crawler_exceptions.medium_scrapping_exception import MediumArticleScrappingException
 
 
 class MediumCrawler(BaseSeleniumCrawler):
