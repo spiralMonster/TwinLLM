@@ -3,7 +3,7 @@ from typing import Annotated
 
 from zenml import step,get_step_context
 
-from document_categories.nosql_db_document_categories.user_document import UserDocument
+from document_categories.nosql_db_document_categories.base.user_document import UserDocument
 
 from pipelines.data_etl_pipeline.metadata.get_or_create_user_metadata import _get_metadata
 

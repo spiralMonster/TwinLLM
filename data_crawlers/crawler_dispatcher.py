@@ -2,7 +2,7 @@ import re
 from loguru import logger
 from urllib.parse import urlparse
 
-from data_crawlers.crawlers.base_crawler import BaseCrawler
+from data_crawlers.crawlers.base.base_crawler import BaseCrawler
 from data_crawlers.crawlers.linkedin_crawler import LinkedinCrawler
 from data_crawlers.crawlers.github_crawler import GitHubCrawler
 from data_crawlers.crawlers.medium_crawler import MediumCrawler

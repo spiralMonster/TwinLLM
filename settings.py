@@ -38,5 +38,17 @@ class SettingsClass(BaseSettings):
     AWS_ACCESS_KEY:str
     AWS_SECRET_KEY:str
 
+    #Post Domains:
+    POST_DOMAINS:list[str]=["https://linkedin.com"]
+
+    #Article Domains:
+    ARTICLE_DOMAINS:list[str]=["https://medium.com","https://substack.com"]
+
+    #Repository Domains:
+    REPOSITORY_DOMAINS:list[str]=["https://github.com"]
+
+    #Tweet Domains:
+    TWEET_DOMAINS:list[str]=["https://x.com","https://threads.com"]
+
 
 Settings=SettingsClass()

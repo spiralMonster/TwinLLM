@@ -5,7 +5,7 @@ from loguru import logger
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.article_document import ArticleDocument
 

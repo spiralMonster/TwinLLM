@@ -1,4 +1,4 @@
-from document_categories.vectordb_document_categories.chunked_documents.chunked_document import ChunkedDocument
+from document_categories.vectordb_document_categories.chunked_documents.base.chunked_document import ChunkedDocument
 from document_categories.data_category import DataCategory
 
 

@@ -5,7 +5,7 @@ import chromedriver_autoinstaller
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-from data_crawlers.crawlers.base_crawler import BaseCrawler
+from data_crawlers.crawlers.base.base_crawler import BaseCrawler
 
 chromedriver_autoinstaller.install()
 

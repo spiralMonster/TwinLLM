@@ -4,7 +4,7 @@ from typing import Annotated
 
 from zenml import step,get_step_context
 
-from document_categories.nosql_db_document_categories.user_document import UserDocument
+from document_categories.nosql_db_document_categories.base.user_document import UserDocument
 from data_crawlers.crawler_dispatcher import CrawlerDispatcher
 
 from pipelines.data_etl_pipeline.metadata.get_crawl_links_metadata import _get_metadata_

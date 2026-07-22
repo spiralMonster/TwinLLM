@@ -1,6 +1,4 @@
-from typing import Optional
-from document_categories.vectordb_document_categories.cleaned_documents.cleaned_document import CleanedDocument
-
+from document_categories.vectordb_document_categories.cleaned_documents.base.cleaned_document import CleanedDocument
 from document_categories.data_category import DataCategory
 
 class CleanedPostDocument(CleanedDocument):

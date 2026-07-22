@@ -8,7 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By,ByType
 
-from data_crawlers.crawlers.base_selenium_crawler import BaseSeleniumCrawler
+from data_crawlers.crawlers.base.base_selenium_crawler import BaseSeleniumCrawler
 
 from document_categories.nosql_db_document_categories.post_document import PostDocument
 

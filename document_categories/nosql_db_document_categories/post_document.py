@@ -1,6 +1,6 @@
 from typing import Optional
 
-from document_categories.nosql_db_document_categories.base_document import Document
+from document_categories.nosql_db_document_categories.base.base_document import Document
 from document_categories.data_category import DataCategory
 
 

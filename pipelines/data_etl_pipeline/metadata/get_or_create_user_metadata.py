@@ -1,4 +1,4 @@
-from document_categories.nosql_db_document_categories.user_document import UserDocument
+from document_categories.nosql_db_document_categories.base.user_document import UserDocument
 
 
 def _get_metadata(user_full_name:str,user:UserDocument) -> dict:

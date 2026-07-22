@@ -1,7 +1,7 @@
 from abc import ABC
 from pydantic import UUID4,Field
 
-from document_categories.nosql_db_document_categories.no_sql_base_document import NoSQLBaseDocument
+from document_categories.nosql_db_document_categories.base.no_sql_base_document import NoSQLBaseDocument
 
 
 class Document(NoSQLBaseDocument,ABC):

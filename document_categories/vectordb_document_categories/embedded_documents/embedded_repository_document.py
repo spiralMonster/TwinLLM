@@ -1,4 +1,4 @@
-from document_categories.vectordb_document_categories.embedded_documents.embedded_document import EmbeddedDocument
+from document_categories.vectordb_document_categories.embedded_documents.base.embedded_document import EmbeddedDocument
 from document_categories.data_category import DataCategory
 
 

@@ -5,7 +5,7 @@ import statistics
 from loguru import logger
 from tempfile import mkdtemp
 
-from data_crawlers.crawlers.base_crawler import BaseCrawler
+from data_crawlers.crawlers.base.base_crawler import BaseCrawler
 from document_categories.nosql_db_document_categories.repository_document import RepositoryDocument
 
 from utils.extension_to_programming_language import ExtensionToProgrammingLanguage
