@@ -15,52 +15,12 @@ class ArticleDataChunker(DataChunker):
     @property
     def metadata(self) -> dict:
         _metadata={
-            "chunk_size":150,
-            "chunk_overlap":25,
-            "minimum_chunk_size":20
+            "chunk_size":400,
+            "chunk_overlap":100,
+            "minimum_chunk_size":75
         }
 
         return _metadata
-
-    def _chunk(
-            self,
-            sentences:list[str],
-            min_chunk_length:int,
-            max_chunk_length:int,
-            chunk_overlap:int
-    )-> list[str]:
-
-        extracts=[]
-        current_chunk=""
-        for sentence in sentences:
-            if len(current_chunk)+len(sentence)<=max_chunk_length:
-                current_chunk+=sentence+" "
-
-            else:
-                if len(current_chunk)>=min_chunk_length:
-                    prev_chunk=extracts[-1]
-                    if prev_chunk:
-                        final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
-                        final_chunk=final_chunk.strip()
-
-
-                    else:
-                        final_chunk=current_chunk.strip()
-
-                    extracts.append(final_chunk)
-
-                current_chunk=sentence+" "
-
-        if len(current_chunk)>=min_chunk_length:
-            prev_chunk=extracts[-1]
-            if prev_chunk:
-                final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
-                final_chunk=final_chunk.strip()
-
-                extracts.append(final_chunk)
-
-
-        return extracts
 
 
 
@@ -110,7 +70,7 @@ class ArticleDataChunker(DataChunker):
 
 
         len_chunks=len(chunked_documents)
-        logger.info(f"The cleaned article: {cleaned_document.link} chunked into {len_chunks} chunks.")
+        logger.info(f"The cleaned article: {cleaned_document.link} is chunked into {len_chunks} chunks.")
 
         return chunked_documents
 

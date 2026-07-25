@@ -19,9 +19,9 @@ class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
     @property
     def metadata(self) ->dict:
         _metadata={
-            "chunk_size":150,
-            "chunk_overlap":20,
-            "minimum_chunk_size":30
+            "chunk_size":500,
+            "chunk_overlap":150,
+            "minimum_chunk_size":80
         }
 
         return _metadata
@@ -30,6 +30,49 @@ class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
     @abstractmethod
     def chunk(self,cleaned_document:CleanedDocumentT) ->list[ChunkedDocumentT]:
         pass
+
+
+
+    def _chunk(
+            self,
+            sentences:list[str],
+            min_chunk_length:int,
+            max_chunk_length:int,
+            chunk_overlap:int
+    )-> list[str]:
+
+        extracts=[]
+        current_chunk=""
+        for sentence in sentences:
+            if len(current_chunk)+len(sentence)<=max_chunk_length:
+                current_chunk+=sentence+" "
+
+            else:
+                if len(current_chunk)>=min_chunk_length:
+                    prev_chunk=extracts[-1]
+                    if prev_chunk:
+                        final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
+                        final_chunk=final_chunk.strip()
+
+
+                    else:
+                        final_chunk=current_chunk.strip()
+
+                    extracts.append(final_chunk)
+
+                current_chunk=sentence+" "
+
+        if len(current_chunk)>=min_chunk_length:
+            prev_chunk=extracts[-1]
+            if prev_chunk:
+                final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
+                final_chunk=final_chunk.strip()
+
+                extracts.append(final_chunk)
+
+
+        return extracts
+
 
 
     def clean_chunks(self,
