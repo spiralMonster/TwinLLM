@@ -9,7 +9,7 @@ from settings import Settings
 
 
 class TweetDataCleaner(DataCleaner):
-    def clean(self,document_model:TweetDocument,minimum_content_length:int) -> CleanedTweetDocument|None:
+    def clean(self,document_model:TweetDocument,minimum_content_length:int=8) -> CleanedTweetDocument|None:
         content=document_model.content
         username=document_model.username
         link=document_model.link

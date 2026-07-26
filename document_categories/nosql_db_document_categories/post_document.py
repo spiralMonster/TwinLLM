@@ -7,7 +7,6 @@ from document_categories.data_category import DataCategory
 class PostDocument(Document):
     username: str|None = None
     image: Optional[str] = None
-    link: str|None = None
     published_date: str|None = None
 
     class Settings:

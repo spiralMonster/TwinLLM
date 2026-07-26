@@ -9,7 +9,7 @@ from settings import Settings
 
 
 class PostDataCleaner(DataCleaner):
-    def clean(self,document_model:PostDocument,min_content_length:int) -> CleanedPostDocument|None:
+    def clean(self,document_model:PostDocument,min_content_length:int=10) -> CleanedPostDocument|None:
         content=document_model.content
         username=document_model.username
         link=document_model.link

@@ -7,6 +7,7 @@ from document_categories.vectordb_document_categories.base.vector_base_document 
 class CleanedDocument(VectorBaseDocument,ABC):
     content: str
     platform: str
+    link: str
     author_id: UUID4
     author_full_name: str
 

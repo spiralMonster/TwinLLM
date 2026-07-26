@@ -4,7 +4,6 @@ from document_categories.data_category import DataCategory
 
 class EmbeddedRepositoryDocument(EmbeddedDocument):
     repository_name:str|None
-    link:str|None
     file_name:str|None
     programming_language_used:str|None
 

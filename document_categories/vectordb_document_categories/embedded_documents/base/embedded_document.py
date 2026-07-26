@@ -8,6 +8,7 @@ class EmbeddedDocument(VectorBaseDocument,ABC):
     content:str
     embedding: list[float]|None
     platform:str
+    link:str
     document_id:UUID4
     author_id:UUID4
     author_full_name:str

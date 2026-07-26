@@ -7,6 +7,7 @@ from document_categories.nosql_db_document_categories.base.no_sql_base_document 
 class Document(NoSQLBaseDocument,ABC):
     content: str
     platform: str
+    link: str
     author_id: UUID4 = Field(alias="author_id")
     author_full_name: str = Field(alias="author_full_name")
 

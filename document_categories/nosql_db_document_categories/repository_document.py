@@ -5,7 +5,6 @@ from document_categories.nosql_db_document_categories.base.base_document import 
 class RepositoryDocument(Document):
     content: dict|None = None
     repository_name: str|None = None
-    link: str|None = None
     file_count: int|None = None
     programming_languages_used: str|None = None
 

@@ -7,6 +7,7 @@ from document_categories.vectordb_document_categories.base.vector_base_document 
 class ChunkedDocument(VectorBaseDocument,ABC):
     content:str
     platform:str
+    link:str
     document_id:UUID4
     author_id:UUID4
     author_full_name:str

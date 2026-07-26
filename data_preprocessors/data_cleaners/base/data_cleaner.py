@@ -94,6 +94,6 @@ class DataCleaner(ABC,Generic[DocumentT,CleanedDocumentT]):
 
 
     @abstractmethod
-    def clean(self,document_model:DocumentT,min_content_length:int) -> CleanedDocumentT|list[CleanedDocumentT]|None:
+    def clean(self,document_model:DocumentT,min_content_length:int=20) -> CleanedDocumentT|list[CleanedDocumentT]|None:
         pass
 

@@ -5,7 +5,6 @@ from document_categories.data_category import DataCategory
 
 class EmbeddedPostDocument(EmbeddedDocument):
     username:str|None = None
-    link:str|None = None
     published_date:str|None = None
 
 

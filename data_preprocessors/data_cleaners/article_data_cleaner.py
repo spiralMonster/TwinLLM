@@ -9,7 +9,7 @@ from settings import Settings
 
 
 class ArticleDataCleaner(DataCleaner):
-    def clean(self,document_model:ArticleDocument,min_content_length:int) -> CleanedArticleDocument|None:
+    def clean(self,document_model:ArticleDocument,min_content_length:int=20) -> CleanedArticleDocument|None:
         content=document_model.content
         title=document_model.title
         description=document_model.description

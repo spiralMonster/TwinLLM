@@ -7,7 +7,6 @@ class CleanedArticleDocument(CleanedDocument):
     username:str|None = None
     title:str|None = None
     description:str|None = None
-    link:str|None = None
     published_date:str|None = None
 
 

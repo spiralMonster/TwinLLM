@@ -115,7 +115,7 @@ class RepositoryDataCleaner(DataCleaner):
 
 
 
-    def clean(self,document_model:RepositoryDocument,minimum_content_length:int) -> CleanedRepositoryDocument|list[CleanedRepositoryDocument]|None:
+    def clean(self,document_model:RepositoryDocument,minimum_content_length:int=10) -> CleanedRepositoryDocument|list[CleanedRepositoryDocument]|None:
         content=document_model.content
         repository_name=document_model.repository_name
         link=document_model.link

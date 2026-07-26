@@ -4,7 +4,6 @@ from document_categories.nosql_db_document_categories.base.base_document import 
 
 class TweetDocument(Document):
     username: str|None = None
-    link: str|None = None
     published_date: str|None = None
 
     class Settings:
