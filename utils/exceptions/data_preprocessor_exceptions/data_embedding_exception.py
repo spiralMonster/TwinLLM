@@ -1,0 +1,2 @@
+class DataEmbeddingException(Exception):
+    pass

@@ -1,0 +1,2 @@
+class DataCleaningException(Exception):
+    pass
