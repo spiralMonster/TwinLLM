@@ -102,3 +102,14 @@ run-data-etl-pipeline=[
     "run-data-etl-user3",
     "run-data-etl-user4"
 ]
+
+## Setting up docker infrastructure for Qdrant Vector Database
+
+### Starting the Qdrant infrastructure:
+local-docker-qdrant-infrastructure-up="docker compose -f configs/docker_configs/qdrant/qdrant-compose.yaml up -d"
+
+### Shutting the Qdrant infrastructure:
+local-docker-qdrant-infrastructure-down="docker compose -f configs/docker_configs/qdrant/qdrant-compose.yaml down"
+
+## Run Rag Feature Pipeline:
+run-rag-feature-pipeline="poetry run python -m pipelines.run_pipeline --run-rag-feature-pipeline --no-cache --rag-feature-pipeline-config-filename author_names.yaml"

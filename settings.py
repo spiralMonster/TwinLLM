@@ -16,13 +16,13 @@ class SettingsClass(BaseSettings):
     QDRANT_API_KEY: str
     QDRANT_CLOUD_URL:str
 
-    QDRANT_DATABASE_HOST:str
-    QDRANT_DATABASE_PORT:str
+    QDRANT_DATABASE_HOST:str = "localhost"
+    QDRANT_DATABASE_PORT:int = 6333
 
 
     #Embedding Model Configs:
-    EMBEDDING_MODEL_ID:str
-    EMBEDDING_MODEL_DEVICE:str
+    EMBEDDING_MODEL_ID:str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_DEVICE:str = "cpu"
 
 
     #LinkedIn Credentials:

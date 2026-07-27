@@ -6,9 +6,11 @@ from datetime import datetime as dt
 from pathlib import Path
 
 from pipelines.data_etl_pipeline.create_data_etl_pipeline import run_data_etl_pipeline
+from pipelines.rag_feature_pipeline.create_rag_feature_pipeline import run_rag_feature_pipeline
 
 root_dir=str(Path(__file__).resolve().parent.parent)
 default_etl_config_filename="data_etl_user1.yaml"
+default_rag_feature_pipeline_config_filename="author_names.yaml"
 
 
 @click.command(
@@ -52,13 +54,29 @@ default_etl_config_filename="data_etl_user1.yaml"
     help="Filename of the ETL config file."
 )
 
+@click.option(
+    "--run-rag-feature-pipeline",
+    is_flag=True,
+    default=False,
+    help="Whether to run Rag feature pipeline."
+)
+
+@click.option(
+    "--rag-feature-pipeline-config-filename",
+    default=default_rag_feature_pipeline_config_filename,
+    help="Filename of the Rag Feature Engineering config file."
+)
+
 def run(
         no_cache:bool=False,
         run_etl:bool=False,
-        etl_config_filename:str=default_etl_config_filename
+        run_rag_feature_pipeline:bool=False,
+        etl_config_filename:str=default_etl_config_filename,
+        rag_feature_pipeline_config_filename:str=default_rag_feature_pipeline_config_filename
 ) -> None:
     assert(
-        run_etl
+        run_etl,
+        run_rag_feature_pipeline
     ),"Please specify an action to run."
 
     pipeline_args={
@@ -76,6 +94,24 @@ def run(
         pipeline_args["config_path"]=config_path
 
         run_data_etl_pipeline.with_options(**pipeline_args)(**run_args)
+
+    elif run_rag_feature_pipeline:
+        run_args={}
+        config_path=os.path.join(
+            root_dir,
+            "configs/pipeline_configs/rag_feature_engineering_pipeline_configs",
+            rag_feature_pipeline_config_filename
+        )
+        pipeline_run_name=f"rag_feature_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+
+        assert os.path.exists(config_path), f"Config file not found: {config_path}"
+
+        pipeline_args["run_name"]=pipeline_run_name
+        pipeline_args["config_path"]=config_path
+
+        run_rag_feature_pipeline.with_options(**pipeline_args)(**run_args)
+
+
 
 
 
