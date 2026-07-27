@@ -6,7 +6,7 @@ from datetime import datetime as dt
 from pathlib import Path
 
 from pipelines.data_etl_pipeline.create_data_etl_pipeline import run_data_etl_pipeline
-from pipelines.rag_feature_pipeline.create_rag_feature_pipeline import run_rag_feature_pipeline
+from pipelines.rag_feature_pipeline.create_rag_feature_pipeline import run_rag_feature_pipeline as run_rag_feat_pipeline
 
 root_dir=str(Path(__file__).resolve().parent.parent)
 default_etl_config_filename="data_etl_user1.yaml"
@@ -75,8 +75,7 @@ def run(
         rag_feature_pipeline_config_filename:str=default_rag_feature_pipeline_config_filename
 ) -> None:
     assert(
-        run_etl,
-        run_rag_feature_pipeline
+        run_etl or run_rag_feature_pipeline
     ),"Please specify an action to run."
 
     pipeline_args={
@@ -109,7 +108,7 @@ def run(
         pipeline_args["run_name"]=pipeline_run_name
         pipeline_args["config_path"]=config_path
 
-        run_rag_feature_pipeline.with_options(**pipeline_args)(**run_args)
+        run_rag_feat_pipeline.with_options(**pipeline_args)(**run_args)
 
 
 

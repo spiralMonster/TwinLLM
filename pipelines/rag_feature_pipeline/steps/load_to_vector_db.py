@@ -13,7 +13,7 @@ from utils.exceptions.qdrant_exceptions.document_insertion_exception import Docu
 def load_to_vector_db(
         documents: Annotated[list,"documents"],
         document_type: str
-) -> None:
+) -> Annotated[str,"message"]:
     num_documents=len(documents)
     logger.info(f"Loading {num_documents} into the vector database.")
 
@@ -30,6 +30,7 @@ def load_to_vector_db(
         doc_loaded_in_collection_successfully=0
         logger.info(f"Loading documents into {collection_name}")
 
+        metadata[collection_name]=dict()
         metadata[collection_name]["num_documents_recieved"]=len(docs)
         metadata[collection_name]["num_documents_loaded_successfully"]=doc_loaded_in_collection_successfully
 
@@ -61,6 +62,8 @@ def load_to_vector_db(
             output_name=output_name,
             metadata=metadata
         )
+
+        return "Data loaded successfully in Vector database."
 
 
 

@@ -16,7 +16,7 @@ def get_or_create_user(user_full_name: str) -> Annotated[UserDocument,"user"]:
     user_first_name=user_details[0]
     user_last_name=user_details[1]
 
-    user=UserDocument(
+    user=UserDocument.get_or_create(
         first_name=user_first_name,
         last_name=user_last_name
     )

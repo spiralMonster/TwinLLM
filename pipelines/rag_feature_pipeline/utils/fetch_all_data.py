@@ -1,6 +1,5 @@
 from loguru import logger
-from concurrent.futures.thread import ThreadPoolExecutor
-from asyncio import as_completed
+from concurrent.futures import ThreadPoolExecutor,as_completed
 
 from document_categories.nosql_db_document_categories.base.user_document import UserDocument
 from document_categories.nosql_db_document_categories.base.base_document import Document
