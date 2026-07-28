@@ -49,10 +49,22 @@ class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
 
             else:
                 if len(current_chunk)>=min_chunk_length:
-                    prev_chunk=extracts[-1]
-                    if prev_chunk:
-                        final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
+                    if extracts:
+                        prev_chunk=extracts[-1]
+                        prev_chunk_tokens=prev_chunk.split(" ")
+
+                        chunk_overlap_in_tokens=chunk_overlap//5
+                        if len(prev_chunk_tokens)>chunk_overlap_in_tokens:
+                            overlap_words=prev_chunk_tokens[-chunk_overlap_in_tokens:]
+
+                        else:
+                            overlap_words=prev_chunk_tokens
+
+                        overlap_text=" ".join(overlap_words).strip()
+
+                        final_chunk=overlap_text+" "+current_chunk
                         final_chunk=final_chunk.strip()
+
 
 
                     else:
@@ -63,8 +75,8 @@ class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
                 current_chunk=sentence+" "
 
         if len(current_chunk)>=min_chunk_length:
-            prev_chunk=extracts[-1]
-            if prev_chunk:
+            if extracts:
+                prev_chunk=extracts[-1]
                 final_chunk=prev_chunk[-chunk_overlap:]+" "+current_chunk
                 final_chunk=final_chunk.strip()
 

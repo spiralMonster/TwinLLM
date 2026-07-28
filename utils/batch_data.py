@@ -15,7 +15,7 @@ def batch(data:list[Any],batch_size:int) -> list[list[Any]]:
         start_ind+=batch_size
         end_ind+=batch_size
 
-    final_batch=data[end_ind:]
+    final_batch=data[start_ind:]
     if final_batch:
         batches.append(final_batch)
 

@@ -1,5 +1,5 @@
 from loguru import logger
-from typing import Annotated
+from typing import Annotated,Any
 
 from zenml import step,get_step_context
 
@@ -11,9 +11,8 @@ from utils.exceptions.qdrant_exceptions.document_insertion_exception import Docu
 
 @step
 def load_to_vector_db(
-        documents: Annotated[list,"documents"],
-        document_type: str
-) -> Annotated[str,"message"]:
+        documents: Annotated[list,"documents"]
+) -> Annotated[str,"load_to_vector_db"]:
     num_documents=len(documents)
     logger.info(f"Loading {num_documents} into the vector database.")
 
@@ -21,7 +20,7 @@ def load_to_vector_db(
     batch_size=4
 
     metadata=dict()
-    metadata["num_documents_recieved"]=num_documents
+    metadata["num_documents_received "]=num_documents
     metadata["num_documents_loaded_successfully"]=num_docs_loaded_successfully
 
     grouped_docs=VectorBaseDocument.group_by_class(documents)
@@ -31,7 +30,7 @@ def load_to_vector_db(
         logger.info(f"Loading documents into {collection_name}")
 
         metadata[collection_name]=dict()
-        metadata[collection_name]["num_documents_recieved"]=len(docs)
+        metadata[collection_name]["num_documents_received "]=len(docs)
         metadata[collection_name]["num_documents_loaded_successfully"]=doc_loaded_in_collection_successfully
 
         doc_batches=batch(docs,batch_size=batch_size)
@@ -51,19 +50,14 @@ def load_to_vector_db(
     metadata["num_documents_loaded_successfully"]=num_docs_loaded_successfully
 
     if num_docs_loaded_successfully:
-        if document_type=="cleaned":
-            output_name="load_clean_documents_to_vectordb"
-
-        else:
-            output_name="load_embedded_documents_to_vectordb"
 
         step_context=get_step_context()
         step_context.add_output_metadata(
-            output_name=output_name,
+            output_name="load_to_vector_db",
             metadata=metadata
         )
 
-        return "Data loaded successfully in Vector database."
+        return "Documents loaded successfully in Vector database."
 
 
 

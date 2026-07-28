@@ -29,7 +29,7 @@ class ArticleDataChunker(DataChunker):
 
         #Splitting the text:
         split_expression=r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s"
-        sentences=re.split(split_expression,split_expression)
+        sentences=re.split(split_expression,cleaned_content)
 
         chunks=self._chunk(
             sentences=sentences,

@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_storage:/data/db
     networks:
       - mongo-network
 
@@ -31,7 +31,7 @@ services:
       - mongo-network
 
 volumes:
-  mongodb_data:
+  mongodb_storage:
 
 networks:
   mongo-network:

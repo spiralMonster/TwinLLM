@@ -27,6 +27,8 @@ class CleaningDispatcher:
                     USER: [{cleaned_document.author_full_name}]
                     PLATFORM: [{cleaned_document.platform}]
                     LINK: [{cleaned_document.link}]
+                    NUMBER_OF_TOKENS_IN_CLEANED_DOC: [{len(cleaned_document.content.split(" "))}]
+                    DOC_LENGTH: [{len(cleaned_document.content)}]
                     INFO: Document Cleaned Successfully.
                     """
                 )

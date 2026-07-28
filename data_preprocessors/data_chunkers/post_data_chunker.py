@@ -25,18 +25,6 @@ class PostDataChunker(DataChunker):
 
 
 
-    def _chunk(
-            self,
-            sentences:list[str],
-            minimum_chunk_size:int,
-            maximum_chunk_size:int,
-            chunk_overlap:int
-    ) -> list[str]:
-        pass
-
-
-
-
     def chunk(self,cleaned_document:CleanedPostDocument) -> list[PostChunkedDocument]:
         cleaned_content=cleaned_document.content
 
@@ -63,8 +51,8 @@ class PostDataChunker(DataChunker):
 
         chunks=self._chunk(
             sentences=sentences_to_chunk,
-            maximum_chunk_size=maximum_chunk_size,
-            minimum_chunk_size=minimum_chunk_size,
+            min_chunk_length=minimum_chunk_size,
+            max_chunk_length=maximum_chunk_size,
             chunk_overlap=chunk_overlap
         )
         chunked_sentences.extend(chunks)

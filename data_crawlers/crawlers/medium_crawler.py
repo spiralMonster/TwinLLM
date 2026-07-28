@@ -14,6 +14,7 @@ class MediumCrawler(BaseSeleniumCrawler):
     document_model=ArticleDocument
 
     def extract(self,link:str,**kwargs) -> tuple[str,dict]:
+        time.sleep(3)
         old_model=self.document_model.find(
             link=link
         )

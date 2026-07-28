@@ -33,7 +33,7 @@ class RepositoryDataChunker(DataChunker):
 
         chunked_sentences=[]
 
-        maximum_chunk_size=self.metadata["maximum_chunk_size"]
+        maximum_chunk_size=self.metadata["chunk_size"]
         minimum_chunk_size=self.metadata["minimum_chunk_size"]
         chunk_overlap=self.metadata["chunk_overlap"]
 

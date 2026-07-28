@@ -59,6 +59,7 @@ class SubstackCrawler(BaseSeleniumCrawler):
         len_crawls=[]
 
         for article_url in article_links:
+            time.sleep(3)
             old_document_model=self.document_model.find(
                 link=article_url
             )

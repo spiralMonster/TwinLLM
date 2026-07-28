@@ -24,13 +24,13 @@ def chunk_and_embed(
         chunks=ChunkingDispatcher.dispatch(cleaned_document=doc)
 
         if chunks:
-            chunked_docs.append(chunks)
+            chunked_docs.extend(chunks)
 
             chunk_batches=batch(chunks,batch_size=10)
             for chunk_batch in chunk_batches:
                 embedded_chunks=EmbeddingDispatcher.dispatch(chunked_documents=chunk_batch)
                 if embedded_chunks:
-                    embedded_docs.append(embedded_chunks)
+                    embedded_docs.extend(embedded_chunks)
 
 
     if embedded_docs:

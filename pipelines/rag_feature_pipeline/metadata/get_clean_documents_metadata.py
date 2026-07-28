@@ -1,5 +1,8 @@
 from document_categories.vectordb_document_categories.cleaned_documents.base.cleaned_document import CleanedDocument
 
+MAX_CONTENT_LENGTH=10000
+MIN_CONTENT_LENGTH=0
+
 
 def get_metadata(documents:list[CleanedDocument]) -> dict:
     metadata=dict()
@@ -31,12 +34,12 @@ def get_metadata(documents:list[CleanedDocument]) -> dict:
             )//2
 
         metadata[data_category]["min_content_length"]=min(
-            metadata[data_category].get("min_content_length",0),
+            metadata[data_category].get("min_content_length",MAX_CONTENT_LENGTH),
             content_length
         )
 
         metadata[data_category]["max_content_length"]=max(
-            metadata[data_category].get("max_content_length",0),
+            metadata[data_category].get("max_content_length",MIN_CONTENT_LENGTH),
             content_length
 
         )
