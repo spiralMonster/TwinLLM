@@ -9,8 +9,9 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-      - storage_for_qdrant:/qdrant/storage
+      - qdrant_storage_for_qdrant:/qdrant/storage
 
 
 volumes:
-  storage_for_qdrant:
+   qdrant_storage_for_qdrant:
+     external: true
