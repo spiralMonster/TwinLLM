@@ -1,0 +1,2 @@
+class DataChunkingException(Exception):
+    pass

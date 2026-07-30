@@ -3,7 +3,7 @@ import hashlib
 from uuid import UUID
 from loguru import logger
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from document_categories.vectordb_document_categories.cleaned_documents.cleaned_repository_document import CleanedRepositoryDocument
 from document_categories.vectordb_document_categories.chunked_documents.repository_chunked_document import RepositoryChunkedDocument
@@ -12,14 +12,12 @@ from data_preprocessors.data_chunkers.base.data_chunker import DataChunker
 
 
 class RepositoryDataChunker(DataChunker):
-    post_chunk_cleaning=False
-
     @property
     def metadata(self) -> dict:
         _metadata={
-            "chunk_size":150,
+            "maximum_chunk_size":1000,
             "chunk_overlap":0,
-            "minimum_chunk_size":50
+            "minimum_chunk_size":250
         }
 
         return _metadata
@@ -33,7 +31,7 @@ class RepositoryDataChunker(DataChunker):
 
         chunked_sentences=[]
 
-        maximum_chunk_size=self.metadata["chunk_size"]
+        maximum_chunk_size=self.metadata["maximum_chunk_size"]
         minimum_chunk_size=self.metadata["minimum_chunk_size"]
         chunk_overlap=self.metadata["chunk_overlap"]
 
@@ -43,23 +41,19 @@ class RepositoryDataChunker(DataChunker):
         )
 
         for sentence in sentences:
-            if len(sentence)<maximum_chunk_size:
+            if len(sentence)<=maximum_chunk_size:
                 if len(sentence)>=minimum_chunk_size:
+                    sentence=sentence.strip()
+                    sentence=sentence.strip(r"\n")
                     chunked_sentences.append(sentence)
 
             else:
                 splits=character_splitter.split_text(sentence)
                 for split in splits:
                     if len(split)>=minimum_chunk_size:
+                        split=split.strip()
+                        split=split.strip(r"\n")
                         chunked_sentences.append(split)
-
-
-        if self.post_chunk_cleaning:
-            cleaned_chunks=[
-                self.clean_chunks(chunk=c)
-                for c in chunked_sentences
-            ]
-            chunked_sentences=cleaned_chunks
 
 
         chunked_docs=[]

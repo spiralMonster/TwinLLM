@@ -11,14 +11,12 @@ from data_preprocessors.data_chunkers.base.data_chunker import DataChunker
 
 
 class PostDataChunker(DataChunker):
-    post_chunk_cleaning=True
-
     @property
     def metadata(self) -> dict:
         _metadata={
-            "chunk_size":250,
-            "chunk_overlap":75,
-            "minimum_chunk_size":50
+            "maximum_chunk_size":400,
+            "chunk_overlap":100,
+            "minimum_chunk_size":80
         }
 
         return _metadata
@@ -32,7 +30,7 @@ class PostDataChunker(DataChunker):
         sentences=re.split(r"\n\n+",cleaned_content)
 
         minimum_chunk_size=self.metadata["minimum_chunk_size"]
-        maximum_chunk_size=self.metadata["chunk_size"]
+        maximum_chunk_size=self.metadata["maximum_chunk_size"]
         chunk_overlap=self.metadata["chunk_overlap"]
 
         split_expression_based_on_punctuation=r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s"
@@ -56,14 +54,6 @@ class PostDataChunker(DataChunker):
             chunk_overlap=chunk_overlap
         )
         chunked_sentences.extend(chunks)
-
-        if self.post_chunk_cleaning:
-            cleaned_chunks=[
-                self.clean_chunks(chunk=c,remove_stopwords=False)
-                for c in chunked_sentences
-            ]
-            chunked_sentences=cleaned_chunks
-
 
         chunked_documents=[]
         for chunk in chunked_sentences:

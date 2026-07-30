@@ -13,13 +13,10 @@ ChunkedDocumentT=TypeVar("ChunkedDocumentT",bound=ChunkedDocument)
 
 
 class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
-    post_chunk_cleaning: bool
-
-
     @property
     def metadata(self) ->dict:
         _metadata={
-            "chunk_size":500,
+            "maximum_chunk_size":500,
             "chunk_overlap":150,
             "minimum_chunk_size":80
         }
@@ -85,52 +82,3 @@ class DataChunker(ABC,Generic[CleanedDocumentT,ChunkedDocumentT]):
 
         return extracts
 
-
-
-    def clean_chunks(self,
-                     chunk:str,
-                     _ignore_punctuation_marks:list[str]=['<','>'],
-                     _ignore_digits:list[str]=[],
-                     convert_words_to_lowercase:bool=True,
-                     remove_stopwords:bool=True
-                     ) -> str:
-
-        words=chunk.split(" ")
-
-        punctuation_table=str.maketrans('','',string.punctuation)
-        digit_table=str.maketrans('','',string.digits)
-
-        stopwords=get_stop_words("english")
-
-        cleaned_chunk=""
-        for word in words:
-            #Removing Punctuations:
-            if not any(punctuation in word for punctuation in _ignore_punctuation_marks):
-                word=word.translate(punctuation_table)
-
-            #Removing Digits
-            if not any(digit in word for digit in _ignore_digits):
-                word=word.translate(digit_table)
-
-            if word:
-                #Transforming words into lower case:
-                if convert_words_to_lowercase:
-                    word=word.lower()
-
-                #Removing Stopwords:
-                if remove_stopwords:
-                    if word not in stopwords:
-                        cleaned_chunk+=word
-                        cleaned_chunk+=" "
-
-                    else:
-                        pass
-
-                else:
-                    cleaned_chunk+=word
-                    cleaned_chunk+=" "
-
-
-        cleaned_chunk=cleaned_chunk.strip()
-
-        return cleaned_chunk

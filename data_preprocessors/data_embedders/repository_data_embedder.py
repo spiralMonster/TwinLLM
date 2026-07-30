@@ -5,6 +5,8 @@ from document_categories.vectordb_document_categories.embedded_documents.embedde
 
 
 class RepositoryDataEmbedder(DataEmbedder):
+    pre_embedding_cleaning=False
+
     def map_model(self,chunk:RepositoryChunkedDocument,embedding:list[float]) -> EmbeddedRepositoryDocument:
         embedded_doc=EmbeddedRepositoryDocument(
             content=chunk.content,

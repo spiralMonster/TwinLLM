@@ -10,14 +10,12 @@ from data_preprocessors.data_chunkers.base.data_chunker import DataChunker
 
 
 class ArticleDataChunker(DataChunker):
-    post_chunk_cleaning=True
-
     @property
     def metadata(self) -> dict:
         _metadata={
-            "chunk_size":400,
-            "chunk_overlap":100,
-            "minimum_chunk_size":75
+            "maximum_chunk_size":1000,
+            "chunk_overlap":200,
+            "minimum_chunk_size":250
         }
 
         return _metadata
@@ -34,16 +32,9 @@ class ArticleDataChunker(DataChunker):
         chunks=self._chunk(
             sentences=sentences,
             min_chunk_length=self.metadata["minimum_chunk_size"],
-            max_chunk_length=self.metadata["chunk_size"],
+            max_chunk_length=self.metadata["maximum_chunk_size"],
             chunk_overlap=self.metadata["chunk_overlap"]
         )
-
-        if self.post_chunk_cleaning:
-            cleaned_chunks=[
-                self.clean_chunks(chunk=chunk)
-                for chunk in chunks
-            ]
-            chunks=cleaned_chunks
 
 
         chunked_documents=[]

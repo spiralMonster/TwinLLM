@@ -1,6 +1,6 @@
 from document_categories.vectordb_document_categories.chunked_documents.base.chunked_document import ChunkedDocument
 
-def get_chunk_metadata(documents:list[ChunkedDocument]) -> dict:
+def get_metadata(documents:list[ChunkedDocument]) -> dict:
     metadata={}
 
     for doc in documents:
@@ -9,6 +9,15 @@ def get_chunk_metadata(documents:list[ChunkedDocument]) -> dict:
 
         if data_category not in metadata:
             metadata[data_category]=doc.metadata
+
+        if "mean_chunk_size" not in metadata[data_category]:
+            metadata[data_category]["mean_chunk_size"]=len(doc.content)
+
+        else:
+            metadata[data_category]["mean_chunk_size"]=(
+                metadata[data_category]["mean_chunk_size"]+
+                len(doc.content)
+            )//2
 
         if "authors" not in metadata[data_category]:
             metadata[data_category]["authors"]=[]

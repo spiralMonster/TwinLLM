@@ -1,7 +1,7 @@
 from document_categories.vectordb_document_categories.embedded_documents.base.embedded_document import EmbeddedDocument
 
 
-def get_embedded_chunks_metadata(documents:list[EmbeddedDocument]) -> dict:
+def get_metadata(documents:list[EmbeddedDocument]) -> dict:
     metadata={}
 
     for doc in documents:

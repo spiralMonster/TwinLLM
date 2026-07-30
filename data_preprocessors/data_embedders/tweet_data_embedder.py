@@ -5,6 +5,8 @@ from document_categories.vectordb_document_categories.embedded_documents.embedde
 
 
 class TweetDataEmbedder(DataEmbedder):
+    pre_embedding_cleaning=False
+
     def map_model(self,chunk:TweetChunkedDocument,embedding:list[float]) -> EmbeddedTweetDocument:
         embedded_doc=EmbeddedTweetDocument(
             content=chunk.content,

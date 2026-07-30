@@ -2,7 +2,7 @@ import hashlib
 from uuid import UUID
 from loguru import logger
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from document_categories.vectordb_document_categories.cleaned_documents.cleaned_tweet_document import CleanedTweetDocument
 from document_categories.vectordb_document_categories.chunked_documents.tweet_chunked_document import TweetChunkedDocument
@@ -11,14 +11,12 @@ from data_preprocessors.data_chunkers.base.data_chunker import DataChunker
 
 
 class TweetDataChunker(DataChunker):
-    post_chunk_cleaning=False
-
     @property
     def metadata(self) -> dict:
         _metadata={
-            "chunk_size":200,
-            "chunk_overlap":50,
-            "minimum_chunk_size":40
+            "maximum_chunk_size":350,
+            "chunk_overlap":75,
+            "minimum_chunk_size":80
         }
 
         return _metadata
@@ -27,7 +25,7 @@ class TweetDataChunker(DataChunker):
     def chunk(self,cleaned_document:CleanedTweetDocument) ->list[TweetChunkedDocument]:
         cleaned_content=cleaned_document.content
 
-        maximum_chunk_size=self.metadata["chunk_size"]
+        maximum_chunk_size=self.metadata["maximum_chunk_size"]
         minimum_chunk_size=self.metadata["minimum_chunk_size"]
         chunk_overlap=self.metadata["chunk_overlap"]
 
@@ -43,13 +41,6 @@ class TweetDataChunker(DataChunker):
             if len(chunk)>=minimum_chunk_size:
                 chunked_texts.append(chunk)
 
-
-        if self.post_chunk_cleaning:
-            cleaned_chunks=[
-                self.clean_chunks(chunk=c)
-                for c in chunked_texts
-            ]
-            chunked_texts=cleaned_chunks
 
         chunked_docs=[]
         for chunk in chunked_texts:

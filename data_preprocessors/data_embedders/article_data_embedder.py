@@ -5,6 +5,8 @@ from document_categories.vectordb_document_categories.embedded_documents.embedde
 
 
 class ArticleDataEmbedder(DataEmbedder):
+    pre_embedding_cleaning=True
+
     def map_model(self,chunk:ArticleChunkedDocument,embedding:list[float]) -> EmbeddedArticleDocument:
         embedded_doc=EmbeddedArticleDocument(
             content=chunk.content,
