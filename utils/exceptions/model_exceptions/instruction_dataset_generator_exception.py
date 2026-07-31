@@ -1,0 +1,2 @@
+class InstructionDatasetGeneratorException(Exception):
+    pass

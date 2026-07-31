@@ -1,6 +1,6 @@
 from loguru import logger
 
-from data_preprocessors.data_chunkers.base.data_chunker import (DataChunker)
+from data_preprocessors.data_chunkers.base.data_chunker import DataChunker
 from data_preprocessors.data_chunkers.post_data_chunker import PostDataChunker
 from data_preprocessors.data_chunkers.article_data_chunker import ArticleDataChunker
 from data_preprocessors.data_chunkers.repository_data_chunker import RepositoryDataChunker

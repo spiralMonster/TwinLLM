@@ -50,5 +50,15 @@ class SettingsClass(BaseSettings):
     #Tweet Domains:
     TWEET_DOMAINS:list[str]=["https://x.com","https://threads.com"]
 
+    #API KEYS FOR LLM MODELS:
+    OPENAI_API_KEY:str
+    GEMINI_API_KEY:str
+    MISTRAL_API_KEY:str
+    ANTHROPIC_API_KEY:str
+    COHERE_API_KEY:str
+    GROQ_API_KEY:str
+    DEEPSEEK_API_KEY:str
+    PERPLEXITY_API_KEY:str
+
 
 Settings=SettingsClass()

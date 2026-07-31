@@ -1,6 +1,3 @@
-import string
-from stop_words import get_stop_words
-
 from abc import ABC,abstractmethod
 from typing import Generic,TypeVar
 
