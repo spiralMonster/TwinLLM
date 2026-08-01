@@ -1,6 +1,7 @@
 from loguru import logger
 
 from document_categories.vectordb_document_categories.chunked_documents.article_chunked_document import ArticleChunkedDocument
+from document_categories.instruction_answer_document_categories.article_instruction_answer_document import ArticleInstructionAnswerDocument
 from dataset_generator.instruction_dataset_generator.base.instruction_generator import InstructionGenerator
 
 from utils.exceptions.model_exceptions.instruction_dataset_generator_exception import InstructionDatasetGeneratorException
@@ -29,19 +30,34 @@ class InstructionGeneratorFromArticles(InstructionGenerator):
         return data_chunks
 
 
-    def generate(self,chunked_documents:list[ArticleChunkedDocument]) -> tuple[list,list]:
+    def generate(self,chunked_documents:list[ArticleChunkedDocument]) -> list[ArticleInstructionAnswerDocument]:
         data_type="article"
         data_chunks=self.create_data_chunks(chunks=chunked_documents)
 
+        temperature=self.MODEL_TEMPERATURE
+        max_retries=self.MODEL_MAX_RETRIES
+
         instructions,answers=self.generate_instruction_answer_dataset(
             data_type=data_type,
-            data_chunks=data_chunks
+            data_chunks=data_chunks,
+            model_temperature=temperature,
+            max_retries=max_retries
         )
 
         len_dataset=len(instructions)
         if len_dataset:
-            logger.info(f"{len_dataset} Instruction-Answer pairs generated from the Article Chunks.")
-            return instructions,answers
+            instruct_answer_docs=[]
+            for inst,ans in zip(instructions,answers):
+                doc=ArticleInstructionAnswerDocument(
+                    instruction=inst,
+                    answer=ans
+                )
+                instruct_answer_docs.append(doc)
+
+
+            logger.info(f"{len(instruct_answer_docs)} Instruction-Answer pairs generated from the Article Chunks.")
+
+            return instruct_answer_docs
 
         else:
             logger.info("Failed to generate Instruction-Answer pairs for Article Chunks.")

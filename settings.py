@@ -50,6 +50,10 @@ class SettingsClass(BaseSettings):
     #Tweet Domains:
     TWEET_DOMAINS:list[str]=["https://x.com","https://threads.com"]
 
+    #Hugging Face Token:
+    HF_TOKEN:str
+    HF_USERNAME:str
+
     #API KEYS FOR LLM MODELS:
     OPENAI_API_KEY:str
     GEMINI_API_KEY:str
@@ -59,6 +63,12 @@ class SettingsClass(BaseSettings):
     GROQ_API_KEY:str
     DEEPSEEK_API_KEY:str
     PERPLEXITY_API_KEY:str
+
+    #Instruction-Answer Pair Generator Model Settings:
+    INSTRUCT_ANS_GENERATOR_TEMP:float=0.6
+    INSTRUCT_ANS_GENERATOR_MAX_RETRIES:int=3
+
+    INSTRUCT_DATASET_NAME:str="llm_twin_instruct_dataset"
 
 
 Settings=SettingsClass()

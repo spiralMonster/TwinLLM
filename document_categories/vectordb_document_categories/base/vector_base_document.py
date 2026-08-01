@@ -10,11 +10,12 @@ import numpy as np
 from qdrant_client.http import exceptions
 from qdrant_client.http.models import Distance,VectorParams
 from qdrant_client.models import PointStruct,CollectionInfo,Record
+from qdrant_client.models import Filter,FieldCondition,MatchValue
 
 from databases.qdrant.qdrant_connection import connection
 from document_categories.data_category import DataCategory
 
-from utils.exceptions.qdrant_exceptions.improperly_configured_exception import ImproperlyConfiguredException
+from utils.exceptions.general_exceptions.improperly_configured_exception import ImproperlyConfiguredException
 from utils.exceptions.qdrant_exceptions.collection_creation_exception import CollectionCreationException
 from utils.exceptions.qdrant_exceptions.document_insertion_exception import DocumentInsertionException
 from utils.exceptions.qdrant_exceptions.find_document_exception import FindDocumentException
@@ -275,7 +276,7 @@ class VectorBaseDocument(BaseModel,Generic[T],ABC):
 
 
     @classmethod
-    def _bulk_find(cls: Type[T],limit:int=10,**kwargs) -> tuple[UUID|None,list[T]]:
+    def _bulk_find(cls: Type[T],_filter:Filter|None,limit:int|None=10,**kwargs) -> tuple[UUID|None,list[T]]:
         collection_name=cls.get_collection_name()
 
         offset=kwargs.pop("offset",None)
@@ -284,18 +285,31 @@ class VectorBaseDocument(BaseModel,Generic[T],ABC):
         with_payload=kwargs.pop("with_payload",True)
         with_vectors=kwargs.pop("with_vectors",False)
 
-        records,next_offset=connection.scroll(
-            collection_name=collection_name,
-            limit=limit,
-            with_payload=with_payload,
-            with_vectors=with_vectors,
-            offset=offset,
-            **kwargs
-        )
+        if _filter:
+            records,next_offset=connection.scroll(
+                collection_name=collection_name,
+                scroll_filter=_filter,
+                limit=limit,
+                with_payload=with_payload,
+                with_vectors=with_vectors,
+                offset=offset,
+                **kwargs
+            )
+        
+        else:
+            records, next_offset = connection.scroll(
+                collection_name=collection_name,
+                limit=limit,
+                with_payload=with_payload,
+                with_vectors=with_vectors,
+                offset=offset,
+                **kwargs,
+            )
+            
 
         documents=[cls.from_record(record) for record in records]
 
-        if not next_offset:
+        if next_offset is not None:
             next_offset=UUID(next_offset,version=4)
 
 
@@ -303,9 +317,24 @@ class VectorBaseDocument(BaseModel,Generic[T],ABC):
 
 
     @classmethod
-    def bulk_find(cls:Type[T],limit:int=10,**kwargs) -> tuple[UUID|None,list[T]]:
+    def bulk_find(cls:Type[T],limit:int|None=10,**kwargs) -> tuple[UUID|None,list[T]]:
         try:
-            next_offset,documents=cls._bulk_find(limit=limit,**kwargs)
+            author_id=kwargs.pop("author_id",None)
+            if author_id:
+                filter_=Filter(
+                    must=[
+                        FieldCondition(
+                            key="author_id",
+                            match=MatchValue(value=author_id)
+                        )
+                    ]
+                )
+                
+                next_offset,documents=cls._bulk_find(limit=limit,_filter=filter_,**kwargs)
+            
+            else:
+                next_offset, documents=cls._bulk_find(limit=limit,_filter=None,**kwargs)
+                
             return next_offset,documents
 
         except exceptions.UnexpectedResponse:
@@ -313,6 +342,44 @@ class VectorBaseDocument(BaseModel,Generic[T],ABC):
             logger.error(f"Failed to find the documents in: {collection_name}")
 
             raise FindDocumentException("Failed to find the documents in Qdrant Database.")
+
+
+    @classmethod
+    def find_all(cls:Type[T],author_id:str,**kwargs) -> list[T]:
+        try:
+            documents=[]
+
+            _filter=Filter(
+                must=[
+                    FieldCondition(
+                        key="author_id",
+                        match=MatchValue(value=author_id)
+                    )
+                ]
+            )
+
+            next_offset,docs=cls._bulk_find(
+                _filter=_filter,
+                **kwargs
+            )
+            documents.extend(docs)
+            while next_offset:
+                next_offset,docs=cls._bulk_find(
+                    _filter=_filter,
+                    offset=next_offset,
+                    **kwargs
+                )
+                documents.extend(docs)
+
+            return documents
+
+        except Exception as e:
+            logger.info(f"Exception encountered: {e}")
+            return []
+
+
+
+
 
 
 

@@ -124,3 +124,7 @@ local-docker-qdrant-infrastructure-down="docker compose -f configs/docker_config
 
 ## Run Rag Feature Pipeline:
 run-rag-feature-pipeline="poetry run python -m pipelines.run_pipeline --run-rag-feature-pipeline --no-cache --rag-feature-pipeline-config-filename author_names.yaml"
+
+## Run Instruct-Answer Dataset Generating Pipeline:
+run-generate-instruct-dataset-pipeline="poetry run python -m pipelines.run_pipeline --run-generate-instruct-dataset-pipeline --no-cache --instruct-dataset-pipeline-config-filename author_names.yaml"
+

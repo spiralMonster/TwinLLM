@@ -19,6 +19,7 @@ from langchain_groq import ChatGroq
 from langchain_perplexity import ChatPerplexity
 
 from document_categories.vectordb_document_categories.chunked_documents.base.chunked_document import ChunkedDocument
+from document_categories.instruction_answer_document_categories.base.instruction_answer_document import InstructionAnswerDocument
 from dataset_generator.instruction_dataset_generator.utils.instruction_dataset_generator_specs import InstructionDatasetGeneratorSpecs
 
 from utils.batch_data import batch
@@ -26,9 +27,13 @@ from settings import Settings
 
 
 ChunkedDocumentT=TypeVar("ChunkedDocumentT",bound=ChunkedDocument)
+InstructionAnswerDocumentT=TypeVar("InstructionAnswerDocumentT",bound=InstructionAnswerDocument)
 
 
-class InstructionGenerator(ABC,Generic[ChunkedDocumentT]):
+class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumentT]):
+    MODEL_TEMPERATURE:float=Settings.INSTRUCT_ANS_GENERATOR_TEMP
+    MODEL_MAX_RETRIES:int=Settings.INSTRUCT_ANS_GENERATOR_MAX_RETRIES
+
     @staticmethod
     def initialize_gpt_model(temperature:float,max_retries:int=3) -> BaseChatModel:
         model=ChatOpenAI(
@@ -195,20 +200,21 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT]):
             data_type:str,
             data_chunks:list[str],
             data_chunks_per_prompt:int=3,
-            model_temperature:float=0.6
+            model_temperature:float=0.6,
+            max_retries:int=3
     ) -> tuple[list,list]:
 
         instructions=[]
         answers=[]
 
-        model_gpt=self.initialize_gpt_model(temperature=model_temperature)
-        model_gemini=self.initialize_gemini_model(temperature=model_temperature)
-        model_mistral=self.initialize_mistral_model(temperature=model_temperature)
-        model_anthropic=self.initialize_anthropic_model(temperature=model_temperature)
+        model_gpt=self.initialize_gpt_model(temperature=model_temperature,max_retries=max_retries)
+        model_gemini=self.initialize_gemini_model(temperature=model_temperature,max_retries=max_retries)
+        model_mistral=self.initialize_mistral_model(temperature=model_temperature,max_retries=max_retries)
+        model_anthropic=self.initialize_anthropic_model(temperature=model_temperature,max_retries=max_retries)
         model_cohere=self.initialize_cohere_model(temperature=model_temperature)
-        model_groq=self.initialize_groq_model(temperature=model_temperature)
-        model_perplexity=self.initialize_perplexity_model(temperature=model_temperature)
-        model_deepseek=self.initialize_deepseek_model(temperature=model_temperature)
+        model_groq=self.initialize_groq_model(temperature=model_temperature,max_retries=max_retries)
+        model_perplexity=self.initialize_perplexity_model(temperature=model_temperature,max_retries=max_retries)
+        model_deepseek=self.initialize_deepseek_model(temperature=model_temperature,max_retries=max_retries)
         
         model_prompt=self.generate_prompt()
 
@@ -288,8 +294,24 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT]):
 
 
     @abstractmethod
-    def generate(self,chunked_documents:list[ChunkedDocumentT]) -> tuple[list,list]:
+    def generate(self,chunked_documents:list[ChunkedDocumentT]) -> list[InstructionAnswerDocumentT]:
         pass
+
+
+    @staticmethod
+    def llm_models_used() -> list[str]:
+        models_used=[
+            "OpenAI",
+            "Gemini",
+            "MistralAI",
+            "Anthropic",
+            "Cohere",
+            "Groq",
+            "Deepseek",
+            "Perplexity"
+        ]
+
+        return models_used
 
 
 
