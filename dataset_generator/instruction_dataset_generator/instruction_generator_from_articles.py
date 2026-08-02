@@ -4,6 +4,7 @@ from document_categories.vectordb_document_categories.chunked_documents.article_
 from document_categories.instruction_answer_document_categories.article_instruction_answer_document import ArticleInstructionAnswerDocument
 from dataset_generator.instruction_dataset_generator.base.instruction_generator import InstructionGenerator
 
+from settings import Settings
 from utils.exceptions.model_exceptions.instruction_dataset_generator_exception import InstructionDatasetGeneratorException
 
 
@@ -37,11 +38,33 @@ class InstructionGeneratorFromArticles(InstructionGenerator):
         temperature=self.MODEL_TEMPERATURE
         max_retries=self.MODEL_MAX_RETRIES
 
+        models=[
+            self.initialize_mistral_model(
+                api_key=Settings.MISTRAL_API_KEY1,
+                temperature=temperature,
+                max_retries=max_retries
+            ),
+            self.initialize_cohere_model(
+                api_key=Settings.COHERE_API_KEY1,
+                temperature=temperature,
+                max_retries=max_retries
+            ),
+            self.initialize_groq_model(
+                api_key=Settings.GROQ_API_KEY1,
+                temperature=temperature,
+                max_retries=max_retries
+            ),
+            self.initialize_qwen_model(
+                api_key=Settings.QWEN_API_KEY1,
+                temperature=temperature,
+                max_retries=max_retries
+            )
+        ]
+
         instructions,answers=self.generate_instruction_answer_dataset(
+            models=models,
             data_type=data_type,
-            data_chunks=data_chunks,
-            model_temperature=temperature,
-            max_retries=max_retries
+            data_chunks=data_chunks
         )
 
         len_dataset=len(instructions)
@@ -53,9 +76,6 @@ class InstructionGeneratorFromArticles(InstructionGenerator):
                     answer=ans
                 )
                 instruct_answer_docs.append(doc)
-
-
-            logger.info(f"{len(instruct_answer_docs)} Instruction-Answer pairs generated from the Article Chunks.")
 
             return instruct_answer_docs
 

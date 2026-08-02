@@ -63,6 +63,8 @@ sagemaker-huggingface-inference-toolkit = "*"
 #Miscelleaneous:
 opik = "*"
 stop-words = "*"
+langchain-ollama = "^1.1.0"
+langchain-qwq = "^0.3.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"

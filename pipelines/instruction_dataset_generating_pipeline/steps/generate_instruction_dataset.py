@@ -12,6 +12,8 @@ from dataset_generator.instruction_dataset_generator.dispatcher.instruction_gene
 
 from pipelines.instruction_dataset_generating_pipeline.metadata.generate_instruction_dataset_metadata import get_metadata
 
+from document_categories.data_category import DataCategory
+
 from utils.batch_data import batch
 from utils.exceptions.model_exceptions.instruction_dataset_generator_exception import InstructionDatasetGeneratorException
 
@@ -26,15 +28,25 @@ def generate_instruction_dataset(
     grouped_documents=ChunkedDocument.group_by_class(chunked_documents)
     for document_class,documents in grouped_documents.items():
         document_category=document_class.get_category()
+        if document_category==DataCategory.REPOSITORIES:
+            documents=documents[:100]
+        
+        logger.info(f"{len(documents)} {document_category} Data Chunks retrieved successfully.")
         logger.info(f"Creating the Instruction-Answer dataset from {document_category} data chunks.")
 
+        num_docs_created=0
         batched_chunks=batch(documents,batch_size=30)
         for chunk_batch in batched_chunks:
             instruct_ans_doc=InstructionGeneratorDispatcher.dispatch(chunked_documents=chunk_batch)
+            num_docs_created+=len(instruct_ans_doc)
             if instruct_ans_doc:
                 instruction_answer_docs.extend(instruct_ans_doc)
 
-            time.sleep(5)
+            time.sleep(3)
+
+        logger.info(f"{num_docs_created} Instruction-Answer Pairs created successfully from {document_category} Data Chunks.")
+
+
 
 
     if instruction_answer_docs:

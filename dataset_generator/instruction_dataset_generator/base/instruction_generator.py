@@ -1,22 +1,19 @@
-import time
 from concurrent.futures import as_completed,ThreadPoolExecutor
 from tqdm.auto import tqdm
 
 from abc import abstractmethod,ABC
 from typing import TypeVar,Generic
+from pydantic import SecretStr
 from loguru import logger
 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.chat_models import BaseChatModel
 
-from langchain_openai import ChatOpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
+
 from langchain_mistralai import ChatMistralAI
-from langchain_anthropic import ChatAnthropic
 from langchain_cohere import ChatCohere
-from langchain_deepseek import ChatDeepSeek
 from langchain_groq import ChatGroq
-from langchain_perplexity import ChatPerplexity
+from langchain_qwq import ChatQwen
 
 from document_categories.vectordb_document_categories.chunked_documents.base.chunked_document import ChunkedDocument
 from document_categories.instruction_answer_document_categories.base.instruction_answer_document import InstructionAnswerDocument
@@ -35,29 +32,10 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
     MODEL_MAX_RETRIES:int=Settings.INSTRUCT_ANS_GENERATOR_MAX_RETRIES
 
     @staticmethod
-    def initialize_gpt_model(temperature:float,max_retries:int=3) -> BaseChatModel:
-        model=ChatOpenAI(
-            api_key=Settings.OPENAI_API_KEY,
-            temperature=temperature,
-            max_retries=max_retries
-        )
-
-        return model
-
-    @staticmethod
-    def initialize_gemini_model(temperature:float,max_retries:int=3) -> BaseChatModel:
-        model=ChatGoogleGenerativeAI(
-            api_key=Settings.GEMINI_API_KEY,
-            temperature=temperature,
-            max_retries=max_retries
-        )
-
-        return model
-
-    @staticmethod
-    def initialize_mistral_model(temperature:float,max_retries:int=3) -> BaseChatModel:
+    def initialize_mistral_model(api_key:SecretStr,temperature:float,max_retries:int=3) -> BaseChatModel:
         model=ChatMistralAI(
-            api_key=Settings.MISTRAL_API_KEY,
+            api_key=api_key,
+            model_name=Settings.MISTRAL_MODEL,
             temperature=temperature,
             max_retries=max_retries
         )
@@ -65,28 +43,10 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
         return model
 
     @staticmethod
-    def initialize_anthropic_model(temperature:float,max_retries:int=3) -> BaseChatModel:
-        model=ChatAnthropic(
-            api_key=Settings.ANTHROPIC_API_KEY,
-            temperature=temperature,
-            max_retries=max_retries
-        )
-
-        return model
-
-    @staticmethod
-    def initialize_cohere_model(temperature:float) -> BaseChatModel:
+    def initialize_cohere_model(api_key:SecretStr,temperature:float,max_retries:int=3) -> BaseChatModel:
         model=ChatCohere(
-            cohere_api_key=Settings.COHERE_API_KEY,
-            temperature=temperature
-        )
-
-        return model
-
-    @staticmethod
-    def initialize_deepseek_model(temperature:float,max_retries:int=3) -> BaseChatModel:
-        model=ChatDeepSeek(
-            api_key=Settings.DEEPSEEK_API_KEY,
+            cohere_api_key=api_key,
+            model=Settings.COHERE_MODEL,
             temperature=temperature,
             max_retries=max_retries
         )
@@ -94,9 +54,10 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
         return model
 
     @staticmethod
-    def initialize_groq_model(temperature:float,max_retries:int=3) -> BaseChatModel:
+    def initialize_groq_model(api_key:SecretStr,temperature:float,max_retries:int=3) -> BaseChatModel:
         model=ChatGroq(
-            api_key=Settings.GROQ_API_KEY,
+            api_key=api_key,
+            model=Settings.GROQ_MODEL,
             temperature=temperature,
             max_retries=max_retries
         )
@@ -104,15 +65,15 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
         return model
 
     @staticmethod
-    def initialize_perplexity_model(temperature:float,max_retries:int=3) -> BaseChatModel:
-        model=ChatPerplexity(
-            api_key=Settings.PERPLEXITY_API_KEY,
+    def initialize_qwen_model(api_key:SecretStr,temperature:float,max_retries:int=3) -> BaseChatModel:
+        model=ChatQwen(
+            api_key=api_key,
+            model=Settings.QWEN_MODEL,
             temperature=temperature,
             max_retries=max_retries
         )
 
         return model
-
 
 
     @staticmethod
@@ -177,7 +138,6 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
                 return instructions,answers
 
         except Exception as e:
-            time.sleep(5)
             logger.info(f"Exception Encountered: {e}")
 
             return [],[]
@@ -197,25 +157,15 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
 
     def generate_instruction_answer_dataset(
             self,
+            models:list[BaseChatModel],
             data_type:str,
             data_chunks:list[str],
             data_chunks_per_prompt:int=3,
-            model_temperature:float=0.6,
-            max_retries:int=3
     ) -> tuple[list,list]:
 
         instructions=[]
         answers=[]
 
-        model_gpt=self.initialize_gpt_model(temperature=model_temperature,max_retries=max_retries)
-        model_gemini=self.initialize_gemini_model(temperature=model_temperature,max_retries=max_retries)
-        model_mistral=self.initialize_mistral_model(temperature=model_temperature,max_retries=max_retries)
-        model_anthropic=self.initialize_anthropic_model(temperature=model_temperature,max_retries=max_retries)
-        model_cohere=self.initialize_cohere_model(temperature=model_temperature)
-        model_groq=self.initialize_groq_model(temperature=model_temperature,max_retries=max_retries)
-        model_perplexity=self.initialize_perplexity_model(temperature=model_temperature,max_retries=max_retries)
-        model_deepseek=self.initialize_deepseek_model(temperature=model_temperature,max_retries=max_retries)
-        
         model_prompt=self.generate_prompt()
 
         chunk_batches=batch(data_chunks,batch_size=data_chunks_per_prompt)
@@ -223,63 +173,15 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
             data_chunk=self.join_data_chunks(data_chunks=chunk_batch)
 
             with ThreadPoolExecutor() as executor:
-                futures = [
+                futures=[
                     executor.submit(
                         self.generate_instruction_answer_pair,
                         data_type,
                         data_chunk,
                         model_prompt,
-                        model_gpt,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_gemini,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_mistral,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_anthropic,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_cohere,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_groq,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_perplexity,
-                    ),
-                    executor.submit(
-                        self.generate_instruction_answer_pair,
-                        data_type,
-                        data_chunk,
-                        model_prompt,
-                        model_deepseek,
+                        model
                     )
+                    for model in models
                 ]
 
                 for future in as_completed(futures):
@@ -301,14 +203,10 @@ class InstructionGenerator(ABC,Generic[ChunkedDocumentT,InstructionAnswerDocumen
     @staticmethod
     def llm_models_used() -> list[str]:
         models_used=[
-            "OpenAI",
-            "Gemini",
-            "MistralAI",
-            "Anthropic",
-            "Cohere",
-            "Groq",
-            "Deepseek",
-            "Perplexity"
+            Settings.MISTRAL_MODEL,
+            Settings.COHERE_MODEL,
+            Settings.GROQ_MODEL,
+            Settings.QWEN_MODEL
         ]
 
         return models_used

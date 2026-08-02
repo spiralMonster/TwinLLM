@@ -11,7 +11,7 @@ from utils.exceptions.model_exceptions.hugging_face_exception import HuggingFace
 @step
 def publish_dataset_to_huggingface_hub(
         dataset:Annotated[Dataset,"instruction_dataset"]
-) -> Annotated[str,"message"]:
+) -> Annotated[str,"publish_datset_to_hub"]:
 
     logger.info("Logging into Hugging Face Hub.")
     try:
@@ -34,7 +34,7 @@ def publish_dataset_to_huggingface_hub(
 
         step_context=get_step_context()
         step_context.add_output_metadata(
-            output_name="message",
+            output_name="publish_datset_to_hub",
             metadata=metadata
         )
 

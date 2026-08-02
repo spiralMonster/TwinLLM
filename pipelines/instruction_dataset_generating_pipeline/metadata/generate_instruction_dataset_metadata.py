@@ -13,15 +13,16 @@ def get_metadata(documents:list[InstructionAnswerDocument]) -> dict:
         instruction=doc.instruction
         answer=doc.answer
 
+        if data_category not in metadata:
+            metadata[data_category]={
+                "instructions": dict(),
+                "answers": dict()
+            }
+        
         metadata[data_category]["num_instruction_answer_pair"]=(
             metadata[data_category].get("num_instruction_answer_pair",0)+1
         )
 
-        if data_category not in metadata:
-            metadata[data_category]={
-                "instructions":dict(),
-                "answers":dict()
-            }
 
 
         len_instruction=len(instruction.split(" "))
