@@ -97,5 +97,10 @@ class SettingsClass(BaseSettings):
     GROQ_API_KEY4:str
     QWEN_API_KEY4:str
 
+    #Toxicity Detection Model Settings:
+    TOXICITY_DETECTION_MODEL_ID:str="unitary/toxic-bert"
+    TOXICITY_DETECTION_MODEL_DEVICE:str="cpu"
+    TOXICITY_DETECTION_MODEL_BATCH_SIZE:int=32
+
 
 Settings=SettingsClass()

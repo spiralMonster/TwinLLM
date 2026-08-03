@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 from numpy.typing import NDArray
 
-from sentence_transformers.SentenceTransformer import SentenceTransformer
+from sentence_transformers import  SentenceTransformer
 from transformers import AutoTokenizer
 
 from utils.singleton_meta_class import SingletonMeta
