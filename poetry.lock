@@ -1471,6 +1471,31 @@ torch = ["torch"]
 vision = ["Pillow (>=9.4.0)"]
 
 [[package]]
+name = "datasketch"
+version = "2.0.0"
+description = "Probabilistic data structures for processing and searching very large datasets"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "datasketch-2.0.0-py3-none-any.whl", hash = "sha256:aea5ffafcce776e03d085740e78b874e778d779b07ee11ca636ca51b3fef09ed"},
+    {file = "datasketch-2.0.0.tar.gz", hash = "sha256:e0570e170f7e64b8d6fb1cc2e4ce36a9f7036c5100167e50a0770addc50558c2"},
+]
+
+[package.dependencies]
+numpy = ">=1.11"
+scipy = ">=1.0.0"
+
+[package.extras]
+aio = ["aiounittest", "motor (>3.6.0)"]
+benchmark = ["fonttools (>=4.60.2)", "matplotlib (>=3.1.2)", "nltk (>=3.4.5) ; python_version < \"3.10\"", "nltk (>=3.9.4) ; python_version >= \"3.10\"", "pandas (>=0.25.3)", "pillow (>=12.2.0) ; python_version >= \"3.10\"", "pyfarmhash (>=0.2.2)", "pyhash (>=0.9.3)", "scikit-learn (>=0.21.3)", "scipy (>=1.3.3)", "setsimilaritysearch (>=0.1.7)"]
+bloom = ["pybloomfilter3 (>=0.7.2)"]
+cassandra = ["cassandra-driver (>=3.20)"]
+experimental-aio = ["aiounittest", "motor (>3.6.0)"]
+redis = ["redis (>=2.10.0)"]
+test = ["cassandra-driver (>=3.20)", "coverage", "mock (>=2.0.0)", "mockredispy", "nose (>=1.3.7)", "nose-exclude (>=0.5.0)", "pygments (>=2.20.0)", "pymongo (>=3.9.0)", "pytest (>=9.0.3) ; python_version >= \"3.10\"", "pytest ; python_version < \"3.10\"", "pytest-asyncio", "pytest-cov", "pytest-rerunfailures", "redis (>=2.10.0)"]
+
+[[package]]
 name = "dill"
 version = "0.4.1"
 description = "serialize all of Python"
@@ -2381,6 +2406,20 @@ files = [
 
 [package.extras]
 tests = ["pytest"]
+
+[[package]]
+name = "hnswlib"
+version = "0.8.0"
+description = "hnswlib"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "hnswlib-0.8.0.tar.gz", hash = "sha256:cb6d037eedebb34a7134e7dc78966441dfd04c9cf5ee93911be911ced951c44c"},
+]
+
+[package.dependencies]
+numpy = "*"
 
 [[package]]
 name = "hpack"
@@ -8709,4 +8748,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.11"
-content-hash = "4bbf0ef54bee6e8fe4be81f0564dc95b5b9936dcdc820f270941e6c329ca75b2"
+content-hash = "73efe1a9555e5cdde8541ed6ea0edcf13edc7f4389ac45ba9cc411fb0f4749be"

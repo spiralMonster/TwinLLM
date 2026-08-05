@@ -25,7 +25,6 @@ def length_based_filtering(
         output_filters:dict[str,Any]
 ) -> Dataset:
 
-    print(50 * "-")
     print("[START] Filtering the Dataset based on Content Length.")
     initial_num_instances=len(dataset)
 
@@ -65,7 +64,6 @@ def length_based_filtering(
     print(f"[INFO] Total number of instances after Length Based Filtering: {len(dataset)}")
 
     print("[END] Filtering the Dataset based on Content Length.")
-    print(50 * "-")
 
     return dataset
 
@@ -120,8 +118,7 @@ def length_based_evaluation_and_filtering(
             output_filters=output_filters
         )
 
-
-
+    print(50 * "-")
     return evaluated_dataset,cleaned_dataset
 
 
