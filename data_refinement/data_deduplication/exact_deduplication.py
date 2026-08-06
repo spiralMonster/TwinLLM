@@ -27,7 +27,7 @@ def exact_deduplication(
         output_key:str,
 ) -> Dataset:
 
-    print("[START] Exact Deduplication of instances in the Dataset.")
+    print(25 * "-" + "START:EXACT DEDUPLICATION" + 25 * "-")
     initial_num_instances=len(dataset)
 
     visited_examples=set()
@@ -43,6 +43,7 @@ def exact_deduplication(
     print(f"[INFO] Total number of instances before Exact Data Deduplication: {initial_num_instances}")
     print(f"[INFO] Total number of instances after Exact Data Deduplication: {len(dataset)}")
 
+    print(25 * "-" + "END:EXACT DEDUPLICATION" + 25 * "-")
     return dataset
     
 

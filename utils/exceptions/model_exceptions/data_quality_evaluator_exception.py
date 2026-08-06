@@ -1,0 +1,2 @@
+class DataQualityEvaluatorException(Exception):
+    pass

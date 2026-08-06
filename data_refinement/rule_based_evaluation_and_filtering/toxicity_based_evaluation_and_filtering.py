@@ -98,7 +98,7 @@ def toxicity_based_evaluation(
         toxicity_result_for_instructions:list[dict[str,float]],
         toxicity_result_for_outputs:list[dict[str,float]]
 ) -> Dataset:
-
+    
     instruction_toxicity_result_key=f"{instruction_key}_toxicity_results"
     output_toxicity_result_key=f"{output_key}_toxicity_results"
 
@@ -126,6 +126,8 @@ def toxicity_based_evaluation_and_filtering(
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
 ) -> tuple[Dataset,Dataset]:
+
+    print(25 * "-" + "START:Toxicity Based Filtering And Evaluation" + 25 * "-")
 
     if create_evaluation_dataset or filter_dataset:
         toxicity_result_for_instructions=[]
@@ -184,15 +186,14 @@ def toxicity_based_evaluation_and_filtering(
             ])
         
         
-        if not evaluated_dataset:
+        if not create_evaluation_dataset:
             evaluated_dataset=evaluated_dataset.remove_columns([
                 instruction_toxicity_result_key,
                 output_toxicity_result_key
             ])
 
 
-        print(50 * "-")
-
+    print(25 * "-" + "END:Toxicity Based Filtering And Evaluation" + 25 * "-")
     return evaluated_dataset,cleaned_dataset
 
 

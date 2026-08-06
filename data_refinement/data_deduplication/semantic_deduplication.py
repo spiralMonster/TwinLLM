@@ -38,7 +38,7 @@ def semantic_deduplication(
         minimum_cosine_similarity_threshold:float
 ) -> Dataset:
     
-    print("[START] Semantic Deduplication.")
+    print(25 * "-" + "START:SEMANTIC DEDUPLICATION" + 25 * "-")
     initial_num_instances=len(dataset)
     
     dataset = dataset.map(
@@ -98,9 +98,7 @@ def semantic_deduplication(
     print(f"[INFO] Total number of instances before Semantic Deduplication: {initial_num_instances}")
     print( f"[INFO] Total number of instances after Semantic Deduplication: {len(dataset)}")
 
-    print("[END] Semantic Deduplication.")
-    print(50*"-")
-
+    print(25 * "-" + "END:SEMANTIC DEDUPLICATION" + 25 * "-")
     return dataset
     
     

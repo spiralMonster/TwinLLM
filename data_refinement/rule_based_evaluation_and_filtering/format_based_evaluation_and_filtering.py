@@ -126,7 +126,9 @@ def format_based_evaluation_and_filtering(
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
 ) -> tuple[Dataset,Dataset]:
-
+    
+    print(25 * "-" + "START:Format Based Filtering And Evaluation" + 25 * "-")
+    
     if create_evaluation_dataset:
         evaluated_dataset=format_based_evaluation(
             dataset=evaluated_dataset,
@@ -146,8 +148,7 @@ def format_based_evaluation_and_filtering(
             output_filters=output_filters
         )
 
-    print(50 * "-")
-
+    print(25 * "-" + "END:Format Based Filtering And Evaluation" + 25 * "-")
     return evaluated_dataset,cleaned_dataset
     
     

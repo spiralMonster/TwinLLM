@@ -61,7 +61,7 @@ def min_hash_deduplication(
         minimum_similarity_threshold:float
 ) ->Dataset:
 
-    print("[Start] Fuzzy Deduplication using MIN-HASH Algorithm.")
+    print(25 * "-" + "START:FUZZY DEDUPLICATION USING MIN-HASH" + 25 * "-")
     initial_num_instances=len(dataset)
     
     dataset=dataset.map(
@@ -115,8 +115,6 @@ def min_hash_deduplication(
     print(f"[INFO] Total number of instances before Fuzzy deduplication using MIN-HASH Algorithm: {initial_num_instances}")
     print(f"[INFO] Total number of instances after Fuzzy deduplication using MIN-HASH Algorithm: {len(dataset)}")
 
-    print("[END] Fuzzy Deduplication using MIN-HASH Algorithm.")
-    print(50 * "-")
-
+    print(25 * "-" + "END:FUZZY DEDUPLICATION USING MIN-HASH" + 25 * "-")
     return dataset
 

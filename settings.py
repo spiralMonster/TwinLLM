@@ -102,5 +102,11 @@ class SettingsClass(BaseSettings):
     TOXICITY_DETECTION_MODEL_DEVICE:str="cpu"
     TOXICITY_DETECTION_MODEL_BATCH_SIZE:int=32
 
+    #LLM As Judge Used for Data Quality Evaluation:
+    LLM_JUDGE_FOR_DATA_QUALITY_EVALUATION:str="mistral-medium-latest"
+    LLM_JUDGE_FOR_DATA_QUALITY_EVALUATION_API_KEY:str=""
+    LLM_JUDGE_FOR_DATA_QUALITY_EVALUATION_TEMP:float=0.3
+    LLM_JUDGE_FOR_DATA_QUALITY_EVALUATION_MAX_RETRIES:int=3
+
 
 Settings=SettingsClass()

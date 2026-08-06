@@ -100,6 +100,8 @@ def length_based_evaluation_and_filtering(
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
 ) -> tuple[Dataset,Dataset]:
+    
+    print(25 * "-" + "START:Length Based Filtering And Evaluation" + 25 * "-")
 
     if create_evaluation_dataset:
         evaluated_dataset=length_based_evaluation(
@@ -118,7 +120,7 @@ def length_based_evaluation_and_filtering(
             output_filters=output_filters
         )
 
-    print(50 * "-")
+    print(25 * "-" + "END:Length Based Filtering And Evaluation" + 25 * "-")
     return evaluated_dataset,cleaned_dataset
 
 
