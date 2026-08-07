@@ -25,7 +25,9 @@ def exact_deduplication(
         dataset:Dataset,
         instruction_key:str,
         output_key:str,
-) -> Dataset:
+) -> tuple[Dataset,dict[str,Any]]:
+
+    metadata=dict()
 
     print(25 * "-" + "START:EXACT DEDUPLICATION" + 25 * "-")
     initial_num_instances=len(dataset)
@@ -40,15 +42,17 @@ def exact_deduplication(
         }
     )
 
+    final_num_instances=len(dataset)
     print(f"[INFO] Total number of instances before Exact Data Deduplication: {initial_num_instances}")
-    print(f"[INFO] Total number of instances after Exact Data Deduplication: {len(dataset)}")
+    print(f"[INFO] Total number of instances after Exact Data Deduplication: {final_num_instances}")
+
+    metadata["num_instances_before_deduplication"]=initial_num_instances
+    metadata["num_instances_after_deduplication"]=final_num_instances
 
     print(25 * "-" + "END:EXACT DEDUPLICATION" + 25 * "-")
-    return dataset
+    return dataset,metadata
     
 
-    
-        
         
         
         

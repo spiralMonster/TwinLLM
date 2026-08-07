@@ -1,5 +1,6 @@
 import re
 import string
+from typing import Any
 from datasets import Dataset
 import hnswlib
 
@@ -36,7 +37,9 @@ def semantic_deduplication(
         instruction_key:str,
         output_key:str,
         minimum_cosine_similarity_threshold:float
-) -> Dataset:
+) -> tuple[Dataset,dict[str,Any]]:
+    
+    metadata=dict()
     
     print(25 * "-" + "START:SEMANTIC DEDUPLICATION" + 25 * "-")
     initial_num_instances=len(dataset)
@@ -95,11 +98,15 @@ def semantic_deduplication(
     dataset=dataset.remove_columns(["instruction_output_pair"])
     dataset=dataset.select(keep_ids)
     
+    final_num_instances=len(dataset)
     print(f"[INFO] Total number of instances before Semantic Deduplication: {initial_num_instances}")
-    print( f"[INFO] Total number of instances after Semantic Deduplication: {len(dataset)}")
+    print( f"[INFO] Total number of instances after Semantic Deduplication: {final_num_instances}")
+
+    metadata["num_instances_before_deduplication"]=initial_num_instances
+    metadata["num_instances_after_deduplication"]=final_num_instances
 
     print(25 * "-" + "END:SEMANTIC DEDUPLICATION" + 25 * "-")
-    return dataset
+    return dataset,metadata
     
     
     

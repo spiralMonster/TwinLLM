@@ -1,5 +1,6 @@
 import re
 import string
+from typing import Any
 from datasets import Dataset
 from datasketch import MinHash,MinHashLSH
 
@@ -59,8 +60,10 @@ def min_hash_deduplication(
         shingle_length:int,
         number_of_hashes_per_document:int,
         minimum_similarity_threshold:float
-) ->Dataset:
+) ->tuple[Dataset,dict[str,Any]]:
 
+    metadata=dict()
+    
     print(25 * "-" + "START:FUZZY DEDUPLICATION USING MIN-HASH" + 25 * "-")
     initial_num_instances=len(dataset)
     
@@ -112,9 +115,13 @@ def min_hash_deduplication(
     dataset=dataset.select(keep_docs)
     dataset=dataset.remove_columns(["instruction_output_pair"])
     
+    final_num_instances=len(dataset)
     print(f"[INFO] Total number of instances before Fuzzy deduplication using MIN-HASH Algorithm: {initial_num_instances}")
-    print(f"[INFO] Total number of instances after Fuzzy deduplication using MIN-HASH Algorithm: {len(dataset)}")
+    print(f"[INFO] Total number of instances after Fuzzy deduplication using MIN-HASH Algorithm: {final_num_instances}")
+
+    metadata["num_instances_before_deduplication"]=initial_num_instances
+    metadata["num_instances_after_deduplication"]=final_num_instances
 
     print(25 * "-" + "END:FUZZY DEDUPLICATION USING MIN-HASH" + 25 * "-")
-    return dataset
+    return dataset,metadata
 

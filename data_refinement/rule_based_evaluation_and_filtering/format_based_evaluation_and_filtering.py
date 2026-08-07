@@ -35,16 +35,20 @@ def format_based_filtering(
         output_key:str,
         instruction_filters:dict[str,Any],
         output_filters:dict[str,Any]
-) -> Dataset:
+) -> tuple[Dataset,dict[str,Any]]:
+
+    metadata=dict()
 
     print("[START] Filtering the Dataset based on Format.")
     initial_num_instances=len(dataset)
+    metadata["num_instances_before_filtering"]=initial_num_instances
 
     print("[INFO] Filtering the Dataset based on Instructions Format.")
     print("[INFO] Filtering Arguments received: ")
     print(instruction_filters)
 
-    print(f"[INFO] Total number of instances before Instructions Format Based Filtering: {len(dataset)}")
+    initial_num_instructions=initial_num_instances
+    print(f"[INFO] Total number of instances before Instructions Format Based Filtering: {initial_num_instructions}")
     dataset=dataset.filter(
         filtering_based_on_format,
         fn_kwargs={
@@ -53,14 +57,18 @@ def format_based_filtering(
             "end_with_punctuation":instruction_filters["end_with_punctuation"]
         }
     )
-    print(f"[INFO] Total number of instances after Instructions Format Based Filtering: {len(dataset)}")
+
+    final_num_instruction=len(dataset)
+    print(f"[INFO] Total number of instances after Instructions Format Based Filtering: {final_num_instruction}")
+    metadata["num_instructions_filtered"]=initial_num_instructions-final_num_instruction
 
 
     print("[INFO] Filtering the Dataset based on Outputs Format.")
     print("[INFO] Filtering arguments received:")
     print(output_filters)
     
-    print(f"[INFO] Total number of instances before Outputs Format Based Filtering: {len(dataset)}")
+    initial_num_outputs=final_num_instruction
+    print(f"[INFO] Total number of instances before Outputs Format Based Filtering: {initial_num_outputs}")
     dataset=dataset.filter(
         filtering_based_on_format,
         fn_kwargs={
@@ -69,15 +77,19 @@ def format_based_filtering(
             "end_with_punctuation":output_filters["end_with_punctuation"]
         }
     )
-    print(f"[INFO] Total number of instances after Outputs Format Based Filtering: {len(dataset)}")
+
+    final_num_outputs=len(dataset)
+    print(f"[INFO] Total number of instances after Outputs Format Based Filtering: {final_num_outputs}")
+    metadata["num_outputs_filtered"]=initial_num_outputs-final_num_outputs
     
     
     print(f"[INFO] Total number of instances before Format Based Filtering: {initial_num_instances}")
-    print(f"[INFO] Total number of instances after Format Based Filtering: {len(dataset)}")
+    print(f"[INFO] Total number of instances after Format Based Filtering: {final_num_outputs}")
+    metadata["num_instances_after_filtering"]=final_num_outputs
 
     print("[END] Filtering the Dataset based on Format.")
 
-    return dataset
+    return dataset,metadata
 
 
 
@@ -125,9 +137,10 @@ def format_based_evaluation_and_filtering(
         output_filters:dict[str,Any],
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
-) -> tuple[Dataset,Dataset]:
+) -> tuple[tuple[Dataset,Dataset],dict[str,Any]]:
     
     print(25 * "-" + "START:Format Based Filtering And Evaluation" + 25 * "-")
+    metadata=dict()
     
     if create_evaluation_dataset:
         evaluated_dataset=format_based_evaluation(
@@ -140,7 +153,7 @@ def format_based_evaluation_and_filtering(
 
 
     if filter_dataset:
-        cleaned_dataset=format_based_filtering(
+        cleaned_dataset,metadata=format_based_filtering(
             dataset=cleaned_dataset,
             instruction_key=instruction_key,
             output_key=output_key,
@@ -149,7 +162,7 @@ def format_based_evaluation_and_filtering(
         )
 
     print(25 * "-" + "END:Format Based Filtering And Evaluation" + 25 * "-")
-    return evaluated_dataset,cleaned_dataset
+    return (evaluated_dataset,cleaned_dataset),metadata
     
     
     

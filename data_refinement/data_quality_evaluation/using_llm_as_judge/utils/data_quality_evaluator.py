@@ -1,3 +1,4 @@
+import time
 from typing import Any
 from loguru import logger
 
@@ -123,6 +124,8 @@ class DataQualityEvaluator:
                     {} for _ in range(len_batch)
                 ]
                 results.extend(result)
+
+            time.sleep(3)
 
 
         if results:

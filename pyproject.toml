@@ -136,3 +136,5 @@ run-rag-feature-pipeline="poetry run python -m pipelines.run_pipeline --run-rag-
 ## Run Instruct-Answer Dataset Generating Pipeline:
 run-generate-instruct-dataset-pipeline="poetry run python -m pipelines.run_pipeline --run-generate-instruct-dataset-pipeline --no-cache --instruct-dataset-pipeline-config-filename author_names.yaml"
 
+## Run Data Refinement Pipeline:
+run-data-refinement-pipeline="poetry run python -m pipelines.run_pipeline --run-data-refinement-pipeline --no-cache --data-refinement-pipeline-config-filename config.yaml"

@@ -43,16 +43,20 @@ def toxicity_based_filtering(
         output_key:str,
         instruction_filters:dict[str,Any],
         output_filters:dict[str,Any]
-) -> Dataset:
+) -> tuple[Dataset,dict[str,Any]]:
 
+    metadata=dict()
+    
     print("[START] Filtering the Dataset based on the Toxicity of the Text.")
     initial_num_instances=len(dataset)
+    metadata["num_instances_before_filtering"]=initial_num_instances
 
     print("[INFO] Filtering the Dataset based on the Toxicity of Instructions.")
     print("[INFO] Filtering arguments received:")
     print(instruction_filters)
 
-    print(f"[INFO] Total number of instances before Instructions Toxicity Based Filtering: {len(dataset)}")
+    initial_num_instructions=initial_num_instances
+    print(f"[INFO] Total number of instances before Instructions Toxicity Based Filtering: {initial_num_instructions}")
     dataset=dataset.filter(
         filtering_based_on_text_toxicity,
         fn_kwargs={
@@ -62,14 +66,18 @@ def toxicity_based_filtering(
         batched=True,
         batch_size=toxicity_detection_model_batch_size
     )
-    print(f"[INFO] Total number of instances after Instructions Toxicity Based Filtering: {len(dataset)}")
+
+    final_num_instructions=len(dataset)
+    print(f"[INFO] Total number of instances after Instructions Toxicity Based Filtering: {final_num_instructions}")
+    metadata["num_instructions_filtered"]=initial_num_instructions-final_num_instructions
 
 
     print("[INFO] Filtering the Dataset based on the Toxicity of Outputs.")
     print("[INFO] Filtering arguments received:")
     print(output_filters)
 
-    print(f"[INFO] Total number of instances before Outputs Toxicity Based Filtering: {len(dataset)}")
+    initial_num_outputs=final_num_instructions
+    print(f"[INFO] Total number of instances before Outputs Toxicity Based Filtering: {initial_num_outputs}")
     dataset=dataset.filter(
         filtering_based_on_text_toxicity,
         fn_kwargs={
@@ -79,15 +87,19 @@ def toxicity_based_filtering(
         batched=True,
         batch_size=toxicity_detection_model_batch_size
     )
-    print(f"[INFO] Total number of instances after Outputs Toxicity Based Filtering: {len(dataset)}")
+
+    final_num_outputs=len(dataset)
+    print(f"[INFO] Total number of instances after Outputs Toxicity Based Filtering: {final_num_outputs}")
+    metadata["num_outputs_filtered"]=initial_num_outputs-final_num_outputs
 
 
     print(f"[INFO] Total number of instances before Toxicity Based Filtering: {initial_num_instances}")
-    print(f"[INFO] Total number of instances after Toxicity Based Filtering: {len(dataset)}")
+    print(f"[INFO] Total number of instances after Toxicity Based Filtering: {final_num_outputs}")
+    metadata["num_instances_after_filtering"]=final_num_outputs
 
     print("[END] Filtering the Dataset based on the Toxicity of the Text.")
 
-    return dataset
+    return dataset,metadata
 
 
 
@@ -125,9 +137,10 @@ def toxicity_based_evaluation_and_filtering(
         output_filters:dict[str,Any],
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
-) -> tuple[Dataset,Dataset]:
+) -> tuple[tuple[Dataset,Dataset],dict[str,Any]]:
 
     print(25 * "-" + "START:Toxicity Based Filtering And Evaluation" + 25 * "-")
+    metadata=dict()
 
     if create_evaluation_dataset or filter_dataset:
         toxicity_result_for_instructions=[]
@@ -172,7 +185,7 @@ def toxicity_based_evaluation_and_filtering(
                 lambda example:lookup_table[example["id"]]
             )
 
-            cleaned_dataset=toxicity_based_filtering(
+            cleaned_dataset,metadata=toxicity_based_filtering(
                 dataset=cleaned_dataset,
                 instruction_key=instruction_toxicity_result_key,
                 output_key=output_toxicity_result_key,
@@ -194,7 +207,7 @@ def toxicity_based_evaluation_and_filtering(
 
 
     print(25 * "-" + "END:Toxicity Based Filtering And Evaluation" + 25 * "-")
-    return evaluated_dataset,cleaned_dataset
+    return (evaluated_dataset,cleaned_dataset),metadata
 
 
 

@@ -3,6 +3,8 @@ from datasets import Dataset
 
 from data_refinement.data_quality_evaluation.using_llm_as_judge.utils.data_quality_evaluator import DataQualityEvaluator
 
+from settings import Settings
+
 data_quality_evaluator=DataQualityEvaluator()
 
 
@@ -52,9 +54,8 @@ def data_quality_based_filtering(
 
     print("[END] Filtering Dataset based on Data Quality.")
     return dataset
-    
-    
-    
+
+
 
 def data_quality_based_evaluation(
         dataset:Dataset,
@@ -104,6 +105,14 @@ def quality_based_evaluation_and_filtering(
         )
         
         evaluated_dataset=evaluated_dataset.remove_columns(["instruction_output_pair"])
+
+        evaluation_score_key="Score_given_by_LLM_AS_JUDGE"
+        evaluated_dataset=evaluated_dataset.map(
+            lambda example:{
+                evaluation_score_key:(sum(example[evaluation_result_key].values()) if example[evaluation_result_key]
+                                           else Settings.DATA_QUALITY_MINIMUM_SCORE_THRESHOLD)
+            }
+        )
         
         if filter_dataset:
             lookup_table={
@@ -130,7 +139,8 @@ def quality_based_evaluation_and_filtering(
         
         if not create_evaluation_dataset:
             evaluated_dataset=evaluated_dataset.remove_columns([
-                evaluation_result_key
+                evaluation_result_key,
+                evaluation_score_key
             ])
 
 

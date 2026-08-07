@@ -23,16 +23,20 @@ def length_based_filtering(
         output_key:str,
         instruction_filters:dict[str,Any],
         output_filters:dict[str,Any]
-) -> Dataset:
-
+) -> tuple[Dataset,dict[str,Any]]:
+    
+    metadata=dict()
+    
     print("[START] Filtering the Dataset based on Content Length.")
     initial_num_instances=len(dataset)
+    metadata["num_instances_before_filtering"]=initial_num_instances
 
     print("[INFO] Filtering the Dataset based on Instructions Length.")
     print("[INFO] Filtering arguments received:")
     print(instruction_filters)
     
-    print(f"[INFO] Total number of instances before Instructions Length Based Filtering: {len(dataset)}")
+    initial_num_instructions=initial_num_instances
+    print(f"[INFO] Total number of instances before Instructions Length Based Filtering: {initial_num_instructions}")
     dataset=dataset.filter(
         filtering_based_on_content_length,
         fn_kwargs={
@@ -41,14 +45,18 @@ def length_based_filtering(
             "max_length":instruction_filters["max_length"]
         }
     )
-    print(f"[INFO] Total number of instances after Instructions Length Based Filtering: {len(dataset)}")
+
+    final_num_instructions=len(dataset)
+    print(f"[INFO] Total number of instances after Instructions Length Based Filtering: {final_num_instructions}")
+    metadata["num_instructions_filtered"]=initial_num_instructions-final_num_instructions
     
     
     print("[INFO] Filtering the Dataset based on Outputs Length.")
     print("[INFO] Filtering arguments received:")
     print(output_filters)
 
-    print(f"[INFO] Total number of instances before Outputs Length Based Filtering: {len(dataset)}")
+    initial_num_outputs=final_num_instructions
+    print(f"[INFO] Total number of instances before Outputs Length Based Filtering: {initial_num_outputs}")
     dataset=dataset.filter(
         filtering_based_on_content_length,
         fn_kwargs={
@@ -57,15 +65,19 @@ def length_based_filtering(
             "max_length":output_filters["max_length"]
         }
     )
-    print(f"[INFO] Total number of instances after Outputs Length Based Filtering: {len(dataset)}")
+
+    final_num_outputs=len(dataset)
+    print(f"[INFO] Total number of instances after Outputs Length Based Filtering: {final_num_outputs}")
+    metadata["num_outputs_filtered"]=initial_num_outputs-final_num_outputs
 
 
     print(f"[INFO] Total number of instances before Length Based Filtering: {initial_num_instances}")
-    print(f"[INFO] Total number of instances after Length Based Filtering: {len(dataset)}")
+    print(f"[INFO] Total number of instances after Length Based Filtering: {final_num_outputs}")
+    metadata["num_instances_after_filtering"]=final_num_outputs
 
     print("[END] Filtering the Dataset based on Content Length.")
 
-    return dataset
+    return dataset,metadata
 
 
 
@@ -99,9 +111,10 @@ def length_based_evaluation_and_filtering(
         output_filters:dict[str,Any],
         create_evaluation_dataset:bool=True,
         filter_dataset:bool=True
-) -> tuple[Dataset,Dataset]:
+) -> tuple[tuple[Dataset,Dataset],dict[str,Any]]:
     
     print(25 * "-" + "START:Length Based Filtering And Evaluation" + 25 * "-")
+    metadata=dict()
 
     if create_evaluation_dataset:
         evaluated_dataset=length_based_evaluation(
@@ -112,7 +125,7 @@ def length_based_evaluation_and_filtering(
 
 
     if filter_dataset:
-        cleaned_dataset=length_based_filtering(
+        cleaned_dataset,metadata=length_based_filtering(
             dataset=cleaned_dataset,
             instruction_key=instruction_key,
             output_key=output_key,
@@ -121,7 +134,7 @@ def length_based_evaluation_and_filtering(
         )
 
     print(25 * "-" + "END:Length Based Filtering And Evaluation" + 25 * "-")
-    return evaluated_dataset,cleaned_dataset
+    return (evaluated_dataset,cleaned_dataset),metadata
 
 
 
