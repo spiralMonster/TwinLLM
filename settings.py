@@ -179,6 +179,10 @@ class SettingsClass(BaseSettings):
 
     # CLEANED INSTRUCT DATASET NAME:
     CLEANED_INSTRUCT_DATASET_NAME:str="llm_twin_instruct_cleaned_dataset"
+
+    COMET_API_KEY:str
+
+    
     
 
 
