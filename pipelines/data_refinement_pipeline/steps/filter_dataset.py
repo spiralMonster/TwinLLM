@@ -17,7 +17,10 @@ from settings import Settings
 def filter_dataset(
         evaluated_dataset:Dataset,
         cleaned_dataset:Dataset,
-) -> Annotated[tuple[Dataset,Dataset],"filtered_dataset"]:
+) -> tuple[
+    Annotated[Dataset,"evaluated_dataset_after_filtering"],
+    Annotated[Dataset,"cleaned_dataset_after_filtering"]
+]:
 
     metadata=dict()
     metadata["num_instances_before_filtering"]=len(cleaned_dataset)
@@ -98,12 +101,24 @@ def filter_dataset(
     metadata["num_instances_after_filtering"]=len(cleaned_dataset)
     metadata["num_instances_filtered"]=metadata["num_instances_before_filtering"]-metadata["num_instances_after_filtering"]
     logger.info("Dataset Filtering Completed.")
-    
-    step_context=get_step_context()
-    step_context.add_output_metadata(
-        output_name="filtered_dataset",
-        metadata=metadata
+
+    metadata_cleaned=metadata
+    step_context_cleaned=get_step_context()
+    step_context_cleaned.add_output_metadata(
+        output_name="cleaned_dataset_after_filtering",
+        metadata=metadata_cleaned
     )
+
+    metadata_evaluated=dict()
+    metadata_evaluated["num_instances"]=len(evaluated_dataset),
+    metadata_evaluated["dataset_features"]=list(evaluated_dataset.features.keys())
+    step_context_evaluated=get_step_context()
+    step_context_evaluated.add_output_metadata(
+        output_name="evaluated_dataset_after_filtering",
+        metadata=metadata_evaluated
+    )
+
+
     
     return evaluated_dataset,cleaned_dataset
 

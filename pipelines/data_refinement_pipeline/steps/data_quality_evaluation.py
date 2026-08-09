@@ -15,7 +15,10 @@ from settings import  Settings
 def data_quality_evaluation(
         evaluated_dataset:Dataset,
         cleaned_dataset:Dataset
-) -> Annotated[tuple[Dataset,Dataset],"refined_datasets"]:
+) -> tuple[
+    Annotated[Dataset,"evaluated_dataset_after_data_quality_evaluation"],
+    Annotated[Dataset,"cleaned_dataset_after_data_quality_evaluation"]
+]:
 
     logger.info("Data Quality Evaluation and Filtering using LLM AS JUGDE")
 
@@ -46,11 +49,21 @@ def data_quality_evaluation(
         num_instances_after_filtering=num_instances_after_filtering,
         mean_evaluation_score_given_by_llm_as_judge=mean_score
     )
+    
+    metadata_cleaned=metadata
+    step_context_cleaned=get_step_context()
+    step_context_cleaned.add_output_metadata(
+        output_name="cleaned_dataset_after_data_quality_evaluation",
+        metadata=metadata_cleaned
+    )
 
-    step_context=get_step_context()
-    step_context.add_output_metadata(
-        output_name="refined_datasets",
-        metadata=metadata
+    metadata_evaluated=dict()
+    metadata_evaluated["num_instances"]=(len(evaluated_dataset),)
+    metadata_evaluated["dataset_features"]=list(evaluated_dataset.features.keys())
+    step_context_evaluated=get_step_context()
+    step_context_evaluated.add_output_metadata(
+        output_name="evaluated_dataset_after_data_quality_evaluation",
+        metadata=metadata_evaluated
     )
 
     logger.info("Data Quality Evaluated And Filtered.")
