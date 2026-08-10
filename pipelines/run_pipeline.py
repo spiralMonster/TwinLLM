@@ -9,6 +9,7 @@ from pipelines.data_etl_pipeline.create_data_etl_pipeline import run_data_etl_pi
 from pipelines.rag_feature_pipeline.create_rag_feature_pipeline import run_rag_feature_pipeline as run_rag_feat_pipeline
 from pipelines.instruction_dataset_generating_pipeline.create_instruction_dataset_generating_pipeline import instruct_dataset_generating_pipeline
 from pipelines.data_refinement_pipeline.create_data_refinement_pipeline import data_refinement_pipeline
+from pipelines.preference_dataset_generating_pipeline.create_preference_dataset_generating_pipeline import preference_dataset_generating_pipeline
 
 
 root_dir=str(Path(__file__).resolve().parent.parent)
@@ -16,7 +17,7 @@ default_etl_config_filename="data_etl_user1.yaml"
 default_rag_feature_pipeline_config_filename="author_names.yaml"
 default_instruction_dataset_generation_pipeline_config_filename="author_names.yaml"
 default_data_refinement_pipeline_config_filename="config.yaml"
-
+default_preference_dataset_generation_pipeline_config_filename="author_names.yaml"
 
 @click.command(
     help="""
@@ -98,22 +99,39 @@ default_data_refinement_pipeline_config_filename="config.yaml"
     help="Filename of the Data Refinement config file."
 )
 
+@click.option(
+    "--run-generate-preference-dataset-pipeline",
+    is_flag=True,
+    default=False,
+    help="Whether to run Preference Dataset Generation Pipeline."
+)
+
+@click.option(
+    "--generate-preference-dataset-pipeline-config-filename",
+    default=default_preference_dataset_generation_pipeline_config_filename,
+    help="Filename of the Preference Dataset Generation Pipeline config file."
+)
+
 def run(
         no_cache:bool=False,
         run_etl:bool=False,
         run_rag_feature_pipeline:bool=False,
         run_generate_instruct_dataset_pipeline:bool=False,
         run_data_refinement_pipeline:bool=False,
+        run_generate_preference_dataset_pipeline:bool=False,
         etl_config_filename:str=default_etl_config_filename,
         rag_feature_pipeline_config_filename:str=default_rag_feature_pipeline_config_filename,
         instruct_dataset_pipeline_config_filename:str=default_instruction_dataset_generation_pipeline_config_filename,
-        data_refinement_pipeline_config_filename:str=default_data_refinement_pipeline_config_filename
+        data_refinement_pipeline_config_filename:str=default_data_refinement_pipeline_config_filename,
+        generate_preference_dataset_pipeline_config_filename:str=default_preference_dataset_generation_pipeline_config_filename
+
 ) -> None:
     assert(
         run_etl or
         run_rag_feature_pipeline or
         run_generate_instruct_dataset_pipeline or
-        run_data_refinement_pipeline
+        run_data_refinement_pipeline or
+        run_generate_preference_dataset_pipeline
     ),"Please specify an action to run."
 
     pipeline_args={
@@ -179,6 +197,23 @@ def run(
         pipeline_args["config_path"]=config_path
 
         data_refinement_pipeline.with_options(**pipeline_args)(**run_args)
+
+
+    elif run_generate_preference_dataset_pipeline:
+        run_args={}
+        config_path=os.path.join(
+            root_dir,
+            "configs/pipeline_configs/preference_dataset_generating_pipeline",
+            generate_preference_dataset_pipeline_config_filename
+        )
+        assert os.path.exists(config_path), f"Config file not found: {config_path}"
+
+        pipeline_run_name=f"generate_preference_dataset_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+
+        pipeline_args["run_name"]=pipeline_run_name
+        pipeline_args["config_path"]=config_path
+
+        preference_dataset_generating_pipeline.with_options(**pipeline_args)(**run_args)
 
 
 

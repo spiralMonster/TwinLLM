@@ -138,3 +138,6 @@ run-generate-instruct-dataset-pipeline="poetry run python -m pipelines.run_pipel
 
 ## Run Data Refinement Pipeline:
 run-data-refinement-pipeline="poetry run python -m pipelines.run_pipeline --run-data-refinement-pipeline --no-cache --data-refinement-pipeline-config-filename config.yaml"
+
+## Run Preference Dataset Generating Pipeline:
+run-generate-preference-dataset-pipeline="poetry run python -m pipelines.run_pipeline --run-generate-preference-dataset-pipeline --no-cache --generate-preference-dataset-pipeline-config-filename author_names.yaml"

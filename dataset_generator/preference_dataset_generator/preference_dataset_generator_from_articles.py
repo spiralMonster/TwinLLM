@@ -59,7 +59,7 @@ class PreferenceDatasetGeneratorFromArticles(PreferenceDatasetGenerator):
 
                 preference_documents.append(doc)
 
-            logger.info(f"{len_dataset} Preference Triplets generated from the Article Data Chunks.")
+
             return preference_documents
 
         else:

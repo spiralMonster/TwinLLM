@@ -59,7 +59,7 @@ class PreferenceDatasetGeneratorFromTweets(PreferenceDatasetGenerator):
                 
                 preference_documents.append(doc)
 
-            logger.info(f"{len_dataset} Preference Triplets generated from the Tweet Data Chunks.")
+
             return preference_documents
         
         else:

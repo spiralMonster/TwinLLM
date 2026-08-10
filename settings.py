@@ -215,7 +215,7 @@ class SettingsClass(BaseSettings):
     GROQ_API_KEY4_FOR_PREFERENCE_DATASET_GEN:str
     GWEN_API_KEY4_FOR_PREFERENCE_DATASET_GEN:str
     
-    
+    PREFERENCE_DATASET_NAME:str="llm_twin_preference_dataset"
 
 
 
