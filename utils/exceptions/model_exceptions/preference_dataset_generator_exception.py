@@ -1,0 +1,2 @@
+class PreferenceDatasetGeneratorException(Exception):
+    pass
