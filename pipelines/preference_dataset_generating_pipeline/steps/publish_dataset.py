@@ -32,7 +32,7 @@ def publish_dataset(
         metadata["dataset_name"]=dataset_name
         metadata["dataset_id"]=dataset_id
         metadata["remark"]="Preference Dataset consisting of the triples of instruction,chosen answer and rejected answer."
-        metadata["dataset_features"]=dataset.features.keys()
+        metadata["dataset_features"]=list(dataset.features.keys())
         metadata["number_of_instances"]=len(dataset)
 
         step_context=get_step_context()
