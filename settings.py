@@ -217,6 +217,16 @@ class SettingsClass(BaseSettings):
     
     PREFERENCE_DATASET_NAME:str="llm_twin_preference_dataset"
 
+    #Fine-Tuned Models:
+    INSTRUCT_MODEL:str="spiralMon/Twin-LLM-Fine-Tuned-Instruct-Model-Llama-3.1-8B-bnb-4bit"
+    PREFERENCE_MODEL:str="spiralMon/Twin-LLM-Fine-Tuned-DPO-Model-Llama-3.1-8B"
+
+    #RAG-Model:
+    RAG_MODEL_NAME:str="mistral-medium-latest"
+    RAG_MODEL_API_KEY:str=""
+    RAG_MODEL_TEMPERATURE:float=0.3
+    RAG_MODEL_MAX_RETRIES:int=3
+
 
 
     

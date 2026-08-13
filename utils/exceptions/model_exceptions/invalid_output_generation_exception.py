@@ -1,0 +1,2 @@
+class InvalidOutputGenerationException(Exception):
+    pass

@@ -7,3 +7,5 @@ class DataCategory(StrEnum):
     TWEETS="tweets"
 
     USERS="users"
+
+    QUERIES="queries"
