@@ -227,6 +227,17 @@ class SettingsClass(BaseSettings):
     RAG_MODEL_TEMPERATURE:float=0.3
     RAG_MODEL_MAX_RETRIES:int=3
 
+    #Cross Encoder Model:
+    CROSS_ENCODER_MODEL_ID:str="cross-encoder/ms-marco-MiniLM-L-4-v2"
+    CROSS_ENCODER_MODEL_DEVICE:str="cpu"
+
+    #Context Retriever Parameters:
+    NUM_QUERY_EXPANSIONS:int=4
+    DOCS_TO_RETRIEVE_PER_QUERY:int=3
+    DOCS_TO_KEEP_IN_CONTEXT:int=5
+
+
+
 
 
     
