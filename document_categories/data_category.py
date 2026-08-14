@@ -9,3 +9,5 @@ class DataCategory(StrEnum):
     USERS="users"
 
     QUERIES="queries"
+    CONVERSATION_HISTORY="conversation_history"
+    CONVERSATION_SUMMARY="conversation_summary"

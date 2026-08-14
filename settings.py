@@ -237,6 +237,16 @@ class SettingsClass(BaseSettings):
     DOCS_TO_KEEP_IN_CONTEXT:int=5
 
 
+    NUM_OF_CONVERSATION_TO_RETRIEVE:int=3
+
+    #Conversation Summary Generator Parameters:
+    CONVERSATION_SUMMARY_GEN_MODEL_ID:str="mistral-medium-latest"
+    CONVERSATION_SUMMARY_GEN_MODEL_API_KEY:str=""
+    CONVERSATION_SUMMARY_GEN_TEMP:float=0.3
+    CONVERSATION_SUMMARY_GEN_MAX_RETRIES:int=3
+
+
+
 
 
 
