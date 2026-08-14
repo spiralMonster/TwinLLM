@@ -1,4 +1,4 @@
-from pydantic import UUID4,Field
+from pydantic import UUID4
 from document_categories.vectordb_document_categories.base.vector_base_document import VectorBaseDocument
 
 from document_categories.data_category import DataCategory
@@ -9,7 +9,7 @@ class Query(VectorBaseDocument):
     query_type:set[str]|None=None
     author_id:UUID4|None=None
     author_full_name:str|None=None
-    metadata:dict=Field(default_factory=dict)
+    platform:str|None=None
 
     class Config:
         category=DataCategory.QUERIES
@@ -33,7 +33,7 @@ class Query(VectorBaseDocument):
             query_type=self.query_type,
             author_id=self.author_id,
             author_full_name=self.author_full_name,
-            metadata=self.metadata
+            platform=self.platform
         )
 
         return query

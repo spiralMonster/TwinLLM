@@ -1,23 +1,24 @@
 from loguru import logger
-from typing import Set,Literal
+from typing import List,Literal
 from pydantic import BaseModel,Field
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from rag.rag_steps.base.rag_step import RagStep
 from document_categories.rag_document_categories.query_document import Query
+from rag.rag_steps.base.rag_step import RagStep
+from rag.rag_steps.base.prompt_template_factory import PromptTemplateFactory
 
 from utils.exceptions.model_exceptions.invalid_output_generation_exception import InvalidOutputGenerationException
 
 
 class OutputSpecs(BaseModel):
-    query_type:Set[Literal["Article", "Post", "Tweet", "Code", "None"]]=Field(description="""
+    query_type:List[Literal["Article", "Post", "Tweet", "Code", "None"]]=Field(description="""
     The type of documents helpful to answer the query.
     """)
 
 
 
-class QueryRouter(RagStep):
+class QueryRouter(RagStep,PromptTemplateFactory):
     @staticmethod
     def create_prompt() -> ChatPromptTemplate:
         template="""
@@ -70,10 +71,10 @@ class QueryRouter(RagStep):
 
                 final_query=Query(
                     content=query.content,
-                    query_type=query_type,
+                    query_type=set(query_type),
                     author_id=query.author_id,
                     author_full_name=query.author_full_name,
-                    metadata=query.metadata
+                    platform=query.platform
                 )
 
                 logger.info("Query routing completed successfully.")

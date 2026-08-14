@@ -3,7 +3,6 @@ from typing import Any
 
 from document_categories.rag_document_categories.query_document import Query
 
-from langchain_core.prompts import ChatPromptTemplate
 from langchain.chat_models import BaseChatModel
 from langchain_mistralai import ChatMistralAI
 
@@ -17,12 +16,6 @@ class RagStep(ABC):
         temperature=Settings.RAG_MODEL_TEMPERATURE,
         max_retries=Settings.RAG_MODEL_MAX_RETRIES
     )
-
-    @staticmethod
-    @abstractmethod
-    def create_prompt() -> ChatPromptTemplate:
-        pass
-
 
 
     @abstractmethod

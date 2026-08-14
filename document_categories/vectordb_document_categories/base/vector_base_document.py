@@ -390,16 +390,16 @@ class VectorBaseDocument(BaseModel,Generic[T],ABC):
         with_payload=kwargs.pop("with_payload",True)
         with_vectors=kwargs.pop("with_vectors",False)
 
-        records=connection.search(
+        result=connection.query_points(
             collection_name=collection_name,
-            query_vector=query_vector,
+            query=query_vector,
             limit=limit,
             with_payload=with_payload,
             with_vectors=with_vectors,
             **kwargs
         )
 
-        documents=[cls.from_record(record) for record in records]
+        documents=[cls.from_record(record) for record in result.points]
 
         return documents
 

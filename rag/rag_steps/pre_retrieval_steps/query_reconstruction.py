@@ -3,8 +3,9 @@ from pydantic import BaseModel,Field
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from rag.rag_steps.base.rag_step import RagStep
 from document_categories.rag_document_categories.query_document import Query
+from rag.rag_steps.base.rag_step import RagStep
+from rag.rag_steps.base.prompt_template_factory import PromptTemplateFactory
 
 from utils.exceptions.model_exceptions.invalid_output_generation_exception import InvalidOutputGenerationException
 
@@ -14,7 +15,7 @@ class OutputSpecs(BaseModel):
 
 
 
-class QueryReconstruction(RagStep):
+class QueryReconstruction(RagStep,PromptTemplateFactory):
     @staticmethod
     def create_prompt() -> ChatPromptTemplate:
         template="""

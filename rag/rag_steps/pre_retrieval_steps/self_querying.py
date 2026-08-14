@@ -9,6 +9,7 @@ from document_categories.nosql_db_document_categories.base.user_document import 
 
 from document_categories.rag_document_categories.query_document import Query
 from rag.rag_steps.base.rag_step import RagStep
+from rag.rag_steps.base.prompt_template_factory import PromptTemplateFactory
 
 from utils.exceptions.model_exceptions.invalid_output_generation_exception import InvalidOutputGenerationException
 
@@ -17,11 +18,13 @@ from utils.exceptions.model_exceptions.invalid_output_generation_exception impor
 class OutputSpecs(BaseModel):
     user_id:str|Literal["None"]=Field(description="The extracted user id from the query.")
     user_full_name:str|Literal["None"]=Field(description="The extracted user name from the query.")
-    additional_metadata:dict[str,str]|Literal["None"]=Field(description="The extracted additional metadata.")
+    platform_name:Literal["LinkedIn","Substack","Medium","X","Threads","GitHub","None"]=Field(description="""
+    The extracted platform name from the query.
+    """)
 
 
 
-class SelfQuerying(RagStep):
+class SelfQuerying(RagStep,PromptTemplateFactory):
     @staticmethod
     def create_prompt() -> ChatPromptTemplate:
         template="""
@@ -29,7 +32,7 @@ class SelfQuerying(RagStep):
         The metadata includes:
          - User Id
          - User Full Name
-         - Additional metadata fields (such as date,platform name,etc.)
+         - Platfrom Name
         
         # Important Note:
          - If you feel there is no metadata available then simply return 'None' for the respective fields.
@@ -39,7 +42,13 @@ class SelfQuerying(RagStep):
          - Metadata:
             user_id: None
             user_full_name: Paul Atreides
-            additional_metadata: None
+            platform_name: None
+        
+         - Query: Hey, I am Justin Paul. Can you help me in writing some tweets to post on X?
+         - Metadata:
+            user_id: None
+            user_full_name: Justin Paul
+            platform_name: X
         
         # Query:
         {query}
@@ -73,7 +82,7 @@ class SelfQuerying(RagStep):
             if isinstance(result,OutputSpecs):
                 _id=result.user_id
                 _name=result.user_full_name
-                _additional_metadata=result.additional_metadata
+                _platform=result.platform_name
 
                 final_query=query
                 if not _id=="None":
@@ -87,7 +96,8 @@ class SelfQuerying(RagStep):
                         content=query_content,
                         author_id=user.id,
                         author_full_name=user.full_name,
-                        query_type=query.query_type
+                        query_type=query.query_type,
+                        platform=query.platform
                     )
 
                 elif not _name=="None":
@@ -107,11 +117,15 @@ class SelfQuerying(RagStep):
                         content=query_content,
                         author_id=user.id,
                         author_full_name=user.full_name,
-                        query_type=query.query_type
+                        query_type=query.query_type,
+                        platform=query.platform
                     )
 
-                if isinstance(_additional_metadata,dict):
-                    final_query.metadata=_additional_metadata
+                if not _platform=="None":
+                    platform=_platform.strip()
+                    platform=platform.strip("\n")
+
+                    final_query.platform=platform
 
                 logger.info("Self Querying completed Successfully.")
                 print(f"Original query: {query}")
@@ -119,7 +133,7 @@ class SelfQuerying(RagStep):
                 Metadata Extracted:
                  - User ID: {_id}
                  - User Full Name: {_name}
-                 - Additional Metadata: {_additional_metadata}
+                 - Platform: {_platform}
                 """)
 
                 return final_query
