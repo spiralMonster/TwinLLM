@@ -21,13 +21,13 @@ class CreatePrompt:
         ### Instruction:
         {}
         
-        ## Context Gathered:
+        ### Context Gathered:
         {}
         
-        ## Conversation History:
+        ### Conversation History:
         {}
         
-        ## Conversation Summary:
+        ### Conversation Summary:
         {}
         
         ### Response:

@@ -38,6 +38,7 @@ class SettingsClass(BaseSettings):
     AWS_REGION:str
     AWS_ACCESS_KEY:str
     AWS_SECRET_KEY:str
+    AWS_ARN_ROLE:str
 
     #Post Domains:
     POST_DOMAINS:list[str]=["https://linkedin.com"]
@@ -244,6 +245,31 @@ class SettingsClass(BaseSettings):
     CONVERSATION_SUMMARY_GEN_MODEL_API_KEY:str=""
     CONVERSATION_SUMMARY_GEN_TEMP:float=0.3
     CONVERSATION_SUMMARY_GEN_MAX_RETRIES:int=3
+
+
+    #Deployment Parameters:
+    NUM_OF_REPLICAS:int=1
+    NUM_OF_GPU:int=1
+    NUM_OF_CPU_CORES:int=2
+    SM_NUM_GPUS:int=1
+    MIN_MEMORY:int=5*1024
+    GPU_INSTANCE:str="ml.g5.xlarge"
+
+    #Model Parameters:
+    DEPLOY_MODEL_ID:str="spiralMon/Twin-LLM-Fine-Tuned-DPO-Model-Llama-3.1-8B"
+    MAX_INPUT_LENGTH:int=2048
+    MAX_TOTAL_TOKENS:int=4096
+    MAX_BATCH_TOTAL_TOKENS=4096
+
+    #SAGEMAKER Parameters:
+    SAGEMAKER_ENDPOINT_CONFIG_NAME:str="llm_twin"
+    SAGEMAKER_ENDPOINT_NAME:str="llm_twin"
+
+    #Model Inference Parameters:
+    MAX_NEW_TOKENS_INFERENCE:int=256
+    TEMPERATURE_INFERENCE:float=0.25
+    TOP_P_INFERENCE:float=0.9
+
 
 
 

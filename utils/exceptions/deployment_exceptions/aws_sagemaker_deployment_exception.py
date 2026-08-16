@@ -1,0 +1,2 @@
+class SageMakerDeploymentException(Exception):
+    pass

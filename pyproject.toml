@@ -141,3 +141,12 @@ run-data-refinement-pipeline="poetry run python -m pipelines.run_pipeline --run-
 
 ## Run Preference Dataset Generating Pipeline:
 run-generate-preference-dataset-pipeline="poetry run python -m pipelines.run_pipeline --run-generate-preference-dataset-pipeline --no-cache --generate-preference-dataset-pipeline-config-filename author_names.yaml"
+
+## Model Deployement on AWS:
+
+### Create SageMaker Role:
+create-sagemaker-role="poetry run python -m model_deployment.aws_deployment.roles.create_sagemaker_role"
+
+### Create SageMaker Execution Role:
+create-sagemaker-execution-role="poetry run python -m model_deployment.aws_deployment.roles.create_sagemaker_execution_role"
+

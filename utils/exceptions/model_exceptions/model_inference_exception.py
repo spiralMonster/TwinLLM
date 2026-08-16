@@ -1,0 +1,2 @@
+class ModelInferenceException(Exception):
+    pass
