@@ -73,6 +73,32 @@ class CreatePrompt:
 
 
 
+if __name__=="__main__":
+    from loguru import logger
+    logger.info("Building Prompt...")
+
+    query="Hey, I am Raj Shamani, can you write an article about how the genz are different and what things they are doing differently?"
+    prompt_creator=CreatePrompt()
+
+    prompt=prompt_creator.create(query=query)
+    logger.info("Prompt:")
+    print(prompt)
+
+    logger.info("Prompt build successfully.")
+
+    #Demo Model Response
+    model_response="In the rapidly evolving field of Natural Language Processing (NLP), fine-tuning has emerged as a powerful and effective technique to adapt pre-trained Large Language Models (LLMs) to specific downstream tasks. Pre-trained large-scale language models (as GPT family) have shown significant advancements in language understanding and generation. However, these pre-trained models are typically trained on vast amounts of text data with unsupervised learning and may not be optimized for a specific task."
+
+    history_handler=ConversationHistoryHandler()
+    summary_handler=ConversationSummaryHandler()
+
+    history_handler.save_conversation(user_content=query,model_content=model_response)
+    summary_handler.save_summary(user_content=query,model_content=model_response)
+
+
+
+
+
 
 
 

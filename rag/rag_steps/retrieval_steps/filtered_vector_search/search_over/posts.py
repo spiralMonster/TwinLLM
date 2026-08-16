@@ -21,7 +21,7 @@ def filtered_vector_search_over_posts(
     embedded_query=PostDataEmbedder().embed(chunk=query_chunk)
 
     retrieved_documents=EmbeddedPostDocument.search(
-        query_vector=embedded_query,
+        query_vector=embedded_query.embedding,
         limit=documents_to_retrieved,
         query_filter=filters
     )

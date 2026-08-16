@@ -224,7 +224,7 @@ class SettingsClass(BaseSettings):
 
     #RAG-Model:
     RAG_MODEL_NAME:str="mistral-medium-latest"
-    RAG_MODEL_API_KEY:str=""
+    RAG_MODEL_API_KEY:str
     RAG_MODEL_TEMPERATURE:float=0.3
     RAG_MODEL_MAX_RETRIES:int=3
 
@@ -242,7 +242,7 @@ class SettingsClass(BaseSettings):
 
     #Conversation Summary Generator Parameters:
     CONVERSATION_SUMMARY_GEN_MODEL_ID:str="mistral-medium-latest"
-    CONVERSATION_SUMMARY_GEN_MODEL_API_KEY:str=""
+    CONVERSATION_SUMMARY_GEN_MODEL_API_KEY:str
     CONVERSATION_SUMMARY_GEN_TEMP:float=0.3
     CONVERSATION_SUMMARY_GEN_MAX_RETRIES:int=3
 
@@ -259,7 +259,7 @@ class SettingsClass(BaseSettings):
     DEPLOY_MODEL_ID:str="spiralMon/Twin-LLM-Fine-Tuned-DPO-Model-Llama-3.1-8B"
     MAX_INPUT_LENGTH:int=2048
     MAX_TOTAL_TOKENS:int=4096
-    MAX_BATCH_TOTAL_TOKENS=4096
+    MAX_BATCH_TOTAL_TOKENS:int=4096
 
     #SAGEMAKER Parameters:
     SAGEMAKER_ENDPOINT_CONFIG_NAME:str="llm_twin"

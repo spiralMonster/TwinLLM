@@ -131,3 +131,13 @@ class ConversationSummaryHandler:
                 updated_value=generated_summary
             )
 
+
+
+if __name__=="__main__":
+    logger.info("Retrieving the Conversation Summary: ")
+
+    summary_handler=ConversationSummaryHandler()
+    summary=summary_handler.retrieve_summary()
+
+    logger.info("Retrieved Conversation Summary: ")
+    print(summary)

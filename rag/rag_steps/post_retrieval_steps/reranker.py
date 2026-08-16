@@ -44,9 +44,8 @@ class Reranker(RagStep):
             score_doc=list(zip(scores,retrieved_documents))
             sorted_score_doc=sorted(score_doc,key=lambda x:x[0],reverse=True)
 
-            scores,docs=sorted_score_doc
-            docs=list(set(docs))
-            reranked_docs=docs[:keep_top_k]
+            reranked_docs=[doc for score,doc in sorted_score_doc[:keep_top_k]]
+            reranked_docs=list(set(reranked_docs))
 
             logger.info("Reranked documents successfully.")
             return reranked_docs

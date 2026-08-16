@@ -17,7 +17,7 @@ class ConversationHistoryDocument(VectorBaseDocument):
     class Config:
         collection_name:str="conversation_history"
         category:str=DataCategory.CONVERSATION_HISTORY
-        user_vector_index:bool=False
+        use_vector_index:bool=False
 
 
     @classmethod

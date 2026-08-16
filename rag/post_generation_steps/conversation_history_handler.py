@@ -43,3 +43,15 @@ class ConversationHistoryHandler:
             return retrieved_conversations
 
 
+
+
+if __name__=="__main__":
+    logger.info("Retrieving the Conversation History:")
+
+    history_handler=ConversationHistoryHandler()
+    conversations=history_handler.retrieve_conversations(num_conversation_to_retrieve=1)
+
+    logger.info("Retrieved Conversations: ")
+    print(conversations)
+
+
