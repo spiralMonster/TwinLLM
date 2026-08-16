@@ -71,6 +71,7 @@ transformers = "5.14.1"
 sentencepiece = "^0.2.2"
 einops = "^0.8.2"
 accelerate = "^1.14.0"
+streamlit = "^1.61.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
@@ -150,3 +151,10 @@ create-sagemaker-role="poetry run python -m model_deployment.aws_deployment.role
 ### Create SageMaker Execution Role:
 create-sagemaker-execution-role="poetry run python -m model_deployment.aws_deployment.roles.create_sagemaker_execution_role"
 
+
+## Start Uvicorn Web Server for FastAPI:
+start-local-uvicorn-server="poetry run python -m application.server.start_uvicorn_server"
+
+
+## Start Streamlit App:
+start-streamlit-app="poetry run streamlit run application/streamlit/app.py"
