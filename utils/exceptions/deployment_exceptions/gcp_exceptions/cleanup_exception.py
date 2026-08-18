@@ -1,0 +1,2 @@
+class CleanupException(Exception):
+    pass

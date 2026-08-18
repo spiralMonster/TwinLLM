@@ -55,7 +55,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
             self.payload["parameters"].update(parameters)
 
 
-    def inference(self):
+    def inference(self) ->str:
         try:
             logger.info("Inference Request Sent.")
 
@@ -73,6 +73,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
             response_body=response["Body"].read().decode("utf8")
 
             result=json.loads(response_body)
+            result=result[0]["generated_text"]
 
             logger.info("Response generated from the Model Successfully.")
             return result

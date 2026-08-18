@@ -1,0 +1,2 @@
+class ManyModelFoundException(Exception):
+    pass

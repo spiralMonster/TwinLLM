@@ -72,6 +72,10 @@ sentencepiece = "^0.2.2"
 einops = "^0.8.2"
 accelerate = "^1.14.0"
 streamlit = "^1.61.1"
+google-api-python-client = "^2.198.0"
+google-auth = "^2.56.3"
+google-cloud-compute = "^1.50.0"
+google-cloud-aiplatform = "^1.164.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
@@ -150,6 +154,21 @@ create-sagemaker-role="poetry run python -m model_deployment.aws_deployment.role
 
 ### Create SageMaker Execution Role:
 create-sagemaker-execution-role="poetry run python -m model_deployment.aws_deployment.roles.create_sagemaker_execution_role"
+
+### Deploying Inference Endpoint on AWS SageMaker:
+deploy-inference-endpoint-sagemaker="poetry run python -m model_deployment.aws_deployment.deploy"
+
+
+## Model Deployement on GCP:
+
+### Enabling Services for GCP Project:
+enable-gcp-project-services="poetry run python -m model_deployment.gcp_deployment.infrastructure.enable_services"
+
+### Deploying Inference Endpoint on Vertex AI:
+deploy-inference-endpoint-vertex-ai="poetry run python -m model_deployment.gcp_deployment.deployment"
+
+### Cleaning Up GCP Resources:
+cleanup-gcp-resources="poetry run python -m model_deployment.gcp_deployment.cleanup_service.cleanup"
 
 
 ## Start Uvicorn Web Server for FastAPI:

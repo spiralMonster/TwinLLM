@@ -7,7 +7,7 @@ from sagemaker.enums import EndpointType
 from model_deployment.aws_deployment.deployment_service.deployment_service import DeploymentService
 from model_deployment.aws_deployment.deployment_strategy.base.deployment_strategy import DeploymentStrategy
 
-from utils.exceptions.deployment_exceptions.aws_sagemaker_deployment_exception import SageMakerDeploymentException
+from utils.exceptions.deployment_exceptions.aws_exceptions.aws_sagemaker_deployment_exception import SageMakerDeploymentException
 from settings import Settings
 
 

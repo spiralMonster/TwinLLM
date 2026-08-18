@@ -40,6 +40,10 @@ class SettingsClass(BaseSettings):
     AWS_SECRET_KEY:str
     AWS_ARN_ROLE:str
 
+    #GCP Credentials
+    GCP_PROJECT_ID:str
+    GCP_REGION:str
+
     #Post Domains:
     POST_DOMAINS:list[str]=["https://linkedin.com"]
 
@@ -262,8 +266,8 @@ class SettingsClass(BaseSettings):
     MAX_BATCH_TOTAL_TOKENS:int=4096
 
     #SAGEMAKER Parameters:
-    SAGEMAKER_ENDPOINT_CONFIG_NAME:str="llm_twin"
-    SAGEMAKER_ENDPOINT_NAME:str="llm_twin"
+    SAGEMAKER_ENDPOINT_CONFIG_NAME:str="llm-twin"
+    SAGEMAKER_ENDPOINT_NAME:str="llm-twin"
 
     #Model Inference Parameters:
     MAX_NEW_TOKENS_INFERENCE:int=256
@@ -271,12 +275,22 @@ class SettingsClass(BaseSettings):
     TOP_P_INFERENCE:float=0.9
 
 
+    #GCP TGI CONTAINER URI:
+    GCP_TGI_CONTAINER_URI:str=(
+        "us-docker.pkg.dev/deeplearning-platform-release/"
+        "gcr.io/huggingface-text-generation-inference-"
+        "cu124.2-3.ubuntu2204.py311"
+    )
 
+    #GCP Endpoint Name For Model Inference:
+    GCP_ENDPOINT_NAME:str="twin-llm-endpoint"
 
-
-
-
-    
+    #GCP Deployment Parameters:
+    GCP_MACHINE_TYPE:str="g2-standard-4"
+    GCP_ACCELERATOR_TYPE:str="NVIDIA_L4"
+    GCP_ACCELERATOR_COUNT:int=1
+    GCP_MIN_REPLICA_COUNT:int=1
+    GCP_MAX_REPLICA_COUNT:int=1
 
 
 Settings=SettingsClass()

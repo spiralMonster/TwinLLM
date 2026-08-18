@@ -1,0 +1,2 @@
+class EndpointCreationException(Exception):
+    pass

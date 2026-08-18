@@ -26,6 +26,6 @@ class InferenceExecutor:
             parameters=parameters
         )
 
-        answer=self.llm.inference()[0]["generated_text"]
+        answer=self.llm.inference()
 
         return answer

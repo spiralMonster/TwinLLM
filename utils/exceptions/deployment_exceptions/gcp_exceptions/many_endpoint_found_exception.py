@@ -1,0 +1,2 @@
+class ManyEndPointFoundException(Exception):
+    pass

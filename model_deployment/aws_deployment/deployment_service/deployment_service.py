@@ -8,7 +8,7 @@ from sagemaker.huggingface import HuggingFaceModel
 
 from model_deployment.aws_deployment.resource_manager.resource_manager import ResourceManager
 
-from utils.exceptions.deployment_exceptions.aws_sagemaker_deployment_exception import SageMakerDeploymentException
+from utils.exceptions.deployment_exceptions.aws_exceptions.aws_sagemaker_deployment_exception import SageMakerDeploymentException
 from settings import Settings
 
 

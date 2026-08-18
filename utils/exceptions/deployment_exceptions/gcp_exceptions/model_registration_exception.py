@@ -1,0 +1,2 @@
+class ModelRegisterationException(Exception):
+    pass
