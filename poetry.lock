@@ -2270,6 +2270,26 @@ vizier = ["google-vizier (>=0.1.6)"]
 xai = ["tensorflow (>=2.3.0,<3.0.0) ; python_version < \"3.13\""]
 
 [[package]]
+name = "google-cloud-artifact-registry"
+version = "1.22.0"
+description = "Google Cloud Artifact Registry API client library"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "google_cloud_artifact_registry-1.22.0-py3-none-any.whl", hash = "sha256:2a595448af4366c016aa61805b7e8f685ab089022a1ebb65bea1eaaae461b37d"},
+    {file = "google_cloud_artifact_registry-1.22.0.tar.gz", hash = "sha256:0e8173a97ae695dfcf02c83277a0fd574e1a39be409da6345b945bebe577ad94"},
+]
+
+[package.dependencies]
+google-api-core = {version = ">=2.17.1,<3.0.0", extras = ["grpc"]}
+google-auth = ">=2.14.1,<2.24.0 || >2.24.0,<2.25.0 || >2.25.0,<3.0.0"
+grpc-google-iam-v1 = ">=0.14.0,<1.0.0"
+grpcio = ">=1.59.0,<2.0.0"
+proto-plus = ">=1.22.3,<2.0.0"
+protobuf = ">=4.25.8,<8.0.0"
+
+[[package]]
 name = "google-cloud-bigquery"
 version = "3.43.0"
 description = "Google BigQuery API client library"
@@ -9544,4 +9564,4 @@ cffi = ["cffi (>=1.17,<2.0) ; platform_python_implementation != \"PyPy\" and pyt
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.11"
-content-hash = "56dd36e3de86730cb232a4a2df580256f897aa17922588c009a8ca895bc5b27f"
+content-hash = "255eaaeeeda6379a7b505551e40e49d502a1cc740bc0a8ac2a3647a3cb97c300"

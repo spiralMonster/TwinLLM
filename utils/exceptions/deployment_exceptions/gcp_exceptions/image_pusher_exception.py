@@ -1,0 +1,2 @@
+class ImagePusherException(Exception):
+    pass

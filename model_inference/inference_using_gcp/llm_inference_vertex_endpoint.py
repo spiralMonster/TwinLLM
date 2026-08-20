@@ -71,3 +71,24 @@ class LLMInferenceVertexEndpoint(Inference):
                 "Failed to generated the response from the Model deployed on Vertex AI."
             ) from e
 
+
+
+
+if __name__=="__main__":
+    from model_deployment.gcp_deployment.deployment.endpoint_manager import EndpointManager
+    from model_inference.inference_executor import InferenceExecutor
+
+    endpoint_manager=EndpointManager()
+    llm=LLMInferenceVertexEndpoint(
+        endpoint_manager=endpoint_manager
+    )
+
+    prompt="Can you explain me about supervised fine tuning?"
+
+    inference_executor=InferenceExecutor(
+        llm=llm,
+        prompt=prompt
+    )
+
+    answer=inference_executor.execute()
+    print(answer)

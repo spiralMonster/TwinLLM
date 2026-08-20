@@ -76,6 +76,8 @@ google-api-python-client = "^2.198.0"
 google-auth = "^2.56.3"
 google-cloud-compute = "^1.50.0"
 google-cloud-aiplatform = "^1.164.0"
+google-cloud-storage = "^3.13.1"
+google-cloud-artifact-registry = "^1.22.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8"
@@ -165,10 +167,13 @@ deploy-inference-endpoint-sagemaker="poetry run python -m model_deployment.aws_d
 enable-gcp-project-services="poetry run python -m model_deployment.gcp_deployment.infrastructure.enable_services"
 
 ### Deploying Inference Endpoint on Vertex AI:
-deploy-inference-endpoint-vertex-ai="poetry run python -m model_deployment.gcp_deployment.deployment"
+deploy-inference-endpoint-vertex-ai="poetry run python -m model_deployment.gcp_deployment.deployment.deployment_service"
 
 ### Cleaning Up GCP Resources:
 cleanup-gcp-resources="poetry run python -m model_deployment.gcp_deployment.cleanup_service.cleanup"
+
+## Testing Deployed Model on GCP:
+test-deployed-model-on-gcp="poetry run python -m model_inference.inference_using_gcp.llm_inference_vertex_endpoint"
 
 
 ## Start Uvicorn Web Server for FastAPI:

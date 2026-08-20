@@ -1,6 +1,9 @@
 from loguru import logger
 from google.cloud import aiplatform
 
+from model_deployment.gcp_deployment.deployment.push_container_image import ContainerImagePusher
+from model_deployment.gcp_deployment.deployment.upload_model import ModelUploader
+
 from settings import Settings
 
 from utils.exceptions.deployment_exceptions.gcp_exceptions.vertex_ai_exception import VertexAIException
@@ -11,28 +14,48 @@ from utils.exceptions.deployment_exceptions.gcp_exceptions.many_model_found_exce
 
 
 class ModelRegistrar:
-    def __init__(self) -> None:
+    def __init__(
+            self,
+            container_image_pusher:ContainerImagePusher,
+            model_uploader:ModelUploader
+    ) -> None:
         aiplatform.init(
             project=Settings.GCP_PROJECT_ID,
             location=Settings.GCP_REGION
         )
 
+        self.container_image_pusher=container_image_pusher
+        self.model_uploader=model_uploader
 
-    @staticmethod
-    def register_model() -> aiplatform.Model:
+
+    def register_model(self) -> aiplatform.Model:
         logger.info(f"Registering the Hugging Face Model : {Settings.DEPLOY_MODEL_ID} with GCP Vertex AI." )
         try:
-            model=aiplatform.Model.upload(
-                display_name=Settings.DEPLOY_MODEL_ID.replace("/","--"),
-                serving_container_image_uri=(
-                    Settings.GCP_TGI_CONTAINER_URI
-                ),
-                serving_container_environment_variables={
-                    "MODEL_ID":Settings.DEPLOY_MODEL_ID,
-                    "HUGGING_FACE_HUB_TOKEN":Settings.HF_TOKEN,
-                    "HF_HUB_ENABLE_HF_TRANSFER":"1",
-                    "NUM_SHARD":"1"
-                }
+            serving_container_image_uri=self.container_image_pusher.get_image_uri()
+            _,artifact_uri=self.model_uploader.get_model_artifact_uri()
+
+            model = aiplatform.Model.upload(
+                display_name=Settings.DEPLOY_MODEL_ID.replace("/", "--"),
+                serving_container_image_uri=serving_container_image_uri,
+                artifact_uri=artifact_uri,
+                serving_container_ports=[8080],
+                serving_container_predict_route="/predict",
+                serving_container_health_route="/health",
+                serving_container_deployment_timeout=1800,
+                serving_container_startup_probe_exec=[
+                    "python3",
+                    "-c",
+                    (
+                        "import urllib.request,sys; "
+                        "sys.exit("
+                        "0 if urllib.request.urlopen("
+                        "'http://localhost:8080/health'"
+                        ").getcode()==200 else 1"
+                        ")"
+                    ),
+                ],
+                serving_container_startup_probe_period_seconds=30,
+                serving_container_startup_probe_timeout_seconds=10,
             )
             model.wait()
 

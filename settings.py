@@ -274,19 +274,28 @@ class SettingsClass(BaseSettings):
     TEMPERATURE_INFERENCE:float=0.25
     TOP_P_INFERENCE:float=0.9
 
+    #GCP Config:
+    GCP_BUCKET_NAME:str="llm_twin_storage"
+    GCP_MODEL_ARTIFACT_PREFIX:str="models"
+
+    CUSTOM_PYTORCH_INFERENCE_IMAGE:str="twin-pytorch:transformers-5.14.1"
+    GCP_REPOSITORY_NAME:str="twin-llm-container-images"
+
+
 
     #GCP TGI CONTAINER URI:
     GCP_TGI_CONTAINER_URI:str=(
-        "us-docker.pkg.dev/deeplearning-platform-release/"
-        "gcr.io/huggingface-text-generation-inference-"
-        "cu124.2-3.ubuntu2204.py311"
-    )
+    "us-docker.pkg.dev/deeplearning-platform-release/"
+    "gcr.io/huggingface-text-generation-inference-"
+    "cu124.2-4.ubuntu2204.py311"
+ )
 
     #GCP Endpoint Name For Model Inference:
     GCP_ENDPOINT_NAME:str="twin-llm-endpoint"
 
     #GCP Deployment Parameters:
-    GCP_MACHINE_TYPE:str="g2-standard-4"
+    GCP_MACHINE_TYPE:str="g2-standard-12"
+    GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION:str="nvidia-l4"
     GCP_ACCELERATOR_TYPE:str="NVIDIA_L4"
     GCP_ACCELERATOR_COUNT:int=1
     GCP_MIN_REPLICA_COUNT:int=1

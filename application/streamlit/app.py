@@ -1,11 +1,12 @@
 import requests
 import streamlit as st
 
-GENERATE_API_URL="http://127.0.0.1:8000/generate"
+GENERATE_API_USING_AWS_URL="http://127.0.0.1:8000/generate_using_aws"
+GENERATE_API_USING_GCP_URL="http://127.0.0.1:8000/generate_using_gcp"
 
 def generate_response(prompt:str) -> str:
     resp=requests.post(
-        GENERATE_API_URL,
+        GENERATE_API_USING_GCP_URL,
         json={
             "query":prompt
         }

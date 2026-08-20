@@ -26,15 +26,15 @@ class ContextRetriever:
     def retrieve(
             self,
             query:str,
-    ) -> list[EmbeddedDocument]:
+    ) -> tuple[str,list[EmbeddedDocument]]:
 
         num_query_expansions=Settings.NUM_QUERY_EXPANSIONS
         docs_to_retrieve_per_query=Settings.DOCS_TO_RETRIEVE_PER_QUERY
         docs_to_keep_in_context=Settings.DOCS_TO_KEEP_IN_CONTEXT
 
-        initial_query=Query.from_str(content=query)
+        query=Query.from_str(content=query)
 
-        query=self.self_querying.generate(query=initial_query)
+        query=self.self_querying.generate(query=query)
         query=self.query_reconstructor.generate(query=query)
 
         expanded_queries=self.query_expander.generate(
@@ -56,9 +56,10 @@ class ContextRetriever:
 
 
         final_retrieved_documents=self.document_reranker.generate(
-            query=initial_query,
+            query=query,
             retrieved_documents=retrieved_documents,
             keep_top_k=docs_to_keep_in_context
         )
+        reconstructed_query=query.content
 
-        return final_retrieved_documents
+        return reconstructed_query,final_retrieved_documents

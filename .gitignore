@@ -5,7 +5,7 @@
 .twitter_profile/
 .threads_profile/
 __pycache__/
-configs/aws_configs/
+configs/deployment_configs/aws_configs/
 utils/__pycache__/
 data_crawlers/crawlers/__pycache__/
 utils/exceptions/__pycache__/

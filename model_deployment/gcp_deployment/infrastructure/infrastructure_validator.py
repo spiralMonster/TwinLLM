@@ -46,12 +46,12 @@ class InfrastructureValidator:
 
 
     def check_gpu(self) -> bool:
-        logger.info(f"Checking the availability of {Settings.GCP_ACCELERATOR_TYPE}")
+        logger.info(f"Checking the availability of {Settings.GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION}")
         client=self.accelerator_client
 
         request=compute_v1.AggregatedListAcceleratorTypesRequest(
             project=Settings.GCP_PROJECT_ID,
-            filter=f"name={Settings.GCP_ACCELERATOR_TYPE}"
+            filter=f"name={Settings.GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION}"
         )
         response=client.aggregated_list(request=request)
 
@@ -64,14 +64,15 @@ class InfrastructureValidator:
             for accelerator in scoped_list.accelerator_types:
                 zone=accelerator.zone.split("/")[-1]
                 available_zones.append(zone)
+                
 
         if available_zones:
             is_available=True
-            logger.info(f"{Settings.GCP_ACCELERATOR_TYPE} is available.")
+            logger.info(f"{Settings.GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION} is available.")
             return is_available
 
         else:
-            logger.info(f"{Settings.GCP_ACCELERATOR_TYPE} is not available.")
+            logger.info(f"{Settings.GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION} is not available.")
             return is_available
 
 

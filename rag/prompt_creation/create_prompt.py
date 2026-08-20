@@ -1,3 +1,5 @@
+from opik import track
+
 from rag.prompt_creation.context_retriever.retrieve_context import ContextRetriever
 from rag.prompt_creation.prompt_crafting.craft import CraftPrompt
 
@@ -36,10 +38,11 @@ class CreatePrompt:
         return template
 
 
+    @track
     def create(self,query:str) -> str:
         print("[INFO] Building Prompt.")
 
-        retrieved_documents=self.context_retriever.retrieve(
+        reconstructed_query,retrieved_documents=self.context_retriever.retrieve(
             query=query
         )
         print("[INFO] Context Retrieved.")
@@ -58,7 +61,7 @@ class CreatePrompt:
         prompt_temp=self.generate_template()
 
         final_prompt=prompt_temp.format(
-            query,
+        reconstructed_query,
             context_crafted,
             conversation_history,
             conversation_summary,
