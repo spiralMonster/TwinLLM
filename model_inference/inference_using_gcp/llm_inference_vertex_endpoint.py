@@ -28,12 +28,12 @@ class LLMInferenceVertexEndpoint(Inference):
     @staticmethod
     def _default_payload() -> Dict[str,Any]:
         payload={
-            "inputs":"Can you explain me about supervised fine tuning in detail?",
+            "prompt":"Can you explain me about supervised fine tuning in detail?",
             "parameters":{
                 "max_new_tokens":Settings.MAX_NEW_TOKENS_INFERENCE,
                 "temperature":Settings.TEMPERATURE_INFERENCE,
                 "top_p":Settings.TOP_P_INFERENCE,
-                "return_full_text":False
+                "do_sample":True
             }
         }
 
@@ -41,7 +41,7 @@ class LLMInferenceVertexEndpoint(Inference):
 
 
     def set_payload(self,inputs:str,parameters:Optional[Dict[str,Any]]) -> None:
-        self.payload["inputs"]=inputs
+        self.payload["prompt"]=inputs
 
         if parameters:
             self.payload["parameters"].update(parameters)
@@ -60,7 +60,7 @@ class LLMInferenceVertexEndpoint(Inference):
                 ]
             )
 
-            result=response.predictions[0]
+            result=response.predictions[0]["prediction"]
 
             logger.info("Response generated from the Model Successfully.")
             return result
@@ -83,7 +83,16 @@ if __name__=="__main__":
         endpoint_manager=endpoint_manager
     )
 
-    prompt="Can you explain me about supervised fine tuning?"
+    alpaca_template="""
+    Below is an instruction that describes a task.Write a response that appropriately completes the request.
+    
+    ### Instruction:
+    {}
+    
+    ### Response:
+    """
+    query="Can you explain me about supervised fine tuning?"
+    prompt=alpaca_template.format(query,"")
 
     inference_executor=InferenceExecutor(
         llm=llm,
@@ -91,4 +100,5 @@ if __name__=="__main__":
     )
 
     answer=inference_executor.execute()
-    print(answer)
+    print(f"User: {query}")
+    print(f"Twin LLM: {answer}")

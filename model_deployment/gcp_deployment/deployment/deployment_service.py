@@ -42,6 +42,13 @@ class DeploymentService:
             try:
                 self.prepare_artifacts()
 
+                image_uri=self.container_image_pusher.get_image_uri()
+                logger.info(f"Custom Pytorch Inference Image Pushed to GCP at uri: {image_uri}")
+
+                _,model_artifact_uri=self.model_uploader.get_model_artifact_uri()
+                logger.info(f"The Model: {Settings.DEPLOY_MODEL_ID} successfully uploaded to GCS Bucket at uri: {model_artifact_uri}")
+
+
                 endpoint = self.endpoint_manager.create_endpoint()
                 model = self.model_registrar.register_model()
                 deployed_endpoint=model.deploy(

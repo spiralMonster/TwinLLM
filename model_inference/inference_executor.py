@@ -17,7 +17,8 @@ class InferenceExecutor:
         inputs=self.prompt
         parameters={
             "max_new_tokens":Settings.MAX_NEW_TOKENS_INFERENCE,
-            "repetition_penalty":1.1,
+            "do_sample":True,
+            "top_p":Settings.TOP_P_INFERENCE,
             "temperature":Settings.TEMPERATURE_INFERENCE
         }
 

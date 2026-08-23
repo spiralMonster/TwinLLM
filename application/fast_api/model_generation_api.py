@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
 
-from application.model_generation_with_rag import call_llm_service_using_aws
-from application.model_generation_with_rag import call_llm_service_using_gcp
+from application.model_generation_with_rag import generate_using_aws
+from application.model_generation_with_rag import generate_using_gcp
 
 
 app=FastAPI()
@@ -18,10 +18,10 @@ class QueryResponse(BaseModel):
 
 
 @app.post("/generate_using_aws",response_model=QueryResponse)
-async def generation_api_endpoint_for_aws(request:QueryRequest):
+def generation_api_endpoint_for_aws(request:QueryRequest):
     try:
         prompt=request.query
-        model_response=call_llm_service_using_aws(prompt=prompt)
+        model_response=generate_using_aws(query=prompt)
 
         result={
             "answer":model_response
@@ -34,10 +34,10 @@ async def generation_api_endpoint_for_aws(request:QueryRequest):
 
 
 @app.post("/generate_using_gcp",response_model=QueryResponse)
-async def generation_api_endpoint_for_gcp(request:QueryRequest):
+def generation_api_endpoint_for_gcp(request:QueryRequest):
     try:
         prompt=request.query
-        model_response=call_llm_service_using_gcp(prompt=prompt)
+        model_response=generate_using_gcp(query=prompt)
 
         result={
             "answer":model_response

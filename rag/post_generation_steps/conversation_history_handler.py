@@ -6,7 +6,7 @@ class ConversationHistoryHandler:
     def save_conversation(user_content:str,model_content:str) -> bool:
         content=f"""
         User:
-        {user_content}
+        {user_content}\n
         Model:
         {model_content}
         """

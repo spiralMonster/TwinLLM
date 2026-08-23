@@ -20,6 +20,8 @@ class CreatePrompt:
     @staticmethod
     def generate_template() -> str:
         template="""
+        Below is an instruction that describes a task.Write a response that appropriately completes the request.
+        
         ### Instruction:
         {}
         

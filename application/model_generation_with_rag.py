@@ -32,6 +32,7 @@ def generate_using_gcp(query:str) -> str:
     prompt=prompt_creator.create(query=query)
 
     model_generation=call_llm_service_using_gcp(prompt=prompt)
+    print(f"Model Generaion: {model_generation}")
 
     history_handler=ConversationHistoryHandler()
     history_handler.save_conversation(

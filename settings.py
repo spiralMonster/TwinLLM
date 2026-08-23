@@ -275,10 +275,10 @@ class SettingsClass(BaseSettings):
     TOP_P_INFERENCE:float=0.9
 
     #GCP Config:
-    GCP_BUCKET_NAME:str="llm_twin_storage"
+    GCP_BUCKET_NAME:str="llm-twin-storage"
     GCP_MODEL_ARTIFACT_PREFIX:str="models"
 
-    CUSTOM_PYTORCH_INFERENCE_IMAGE:str="twin-pytorch:transformers-5.14.1"
+    CUSTOM_PYTORCH_INFERENCE_IMAGE:str="twin-pytorch_inference_server:transformers-5.14.1"
     GCP_REPOSITORY_NAME:str="twin-llm-container-images"
 
 
@@ -294,7 +294,7 @@ class SettingsClass(BaseSettings):
     GCP_ENDPOINT_NAME:str="twin-llm-endpoint"
 
     #GCP Deployment Parameters:
-    GCP_MACHINE_TYPE:str="g2-standard-12"
+    GCP_MACHINE_TYPE:str="g2-standard-8"
     GCP_ACCELERATOR_TYPE_FOR_INFRASTRUCTURE_VALIDATION:str="nvidia-l4"
     GCP_ACCELERATOR_TYPE:str="NVIDIA_L4"
     GCP_ACCELERATOR_COUNT:int=1

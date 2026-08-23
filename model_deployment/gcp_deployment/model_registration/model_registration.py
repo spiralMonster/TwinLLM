@@ -34,7 +34,7 @@ class ModelRegistrar:
             serving_container_image_uri=self.container_image_pusher.get_image_uri()
             _,artifact_uri=self.model_uploader.get_model_artifact_uri()
 
-            model = aiplatform.Model.upload(
+            model=aiplatform.Model.upload(
                 display_name=Settings.DEPLOY_MODEL_ID.replace("/", "--"),
                 serving_container_image_uri=serving_container_image_uri,
                 artifact_uri=artifact_uri,
@@ -42,20 +42,6 @@ class ModelRegistrar:
                 serving_container_predict_route="/predict",
                 serving_container_health_route="/health",
                 serving_container_deployment_timeout=1800,
-                serving_container_startup_probe_exec=[
-                    "python3",
-                    "-c",
-                    (
-                        "import urllib.request,sys; "
-                        "sys.exit("
-                        "0 if urllib.request.urlopen("
-                        "'http://localhost:8080/health'"
-                        ").getcode()==200 else 1"
-                        ")"
-                    ),
-                ],
-                serving_container_startup_probe_period_seconds=30,
-                serving_container_startup_probe_timeout_seconds=10,
             )
             model.wait()
 

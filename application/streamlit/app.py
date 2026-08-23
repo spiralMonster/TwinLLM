@@ -1,29 +1,21 @@
 import requests
 import streamlit as st
 
-GENERATE_API_USING_AWS_URL="http://127.0.0.1:8000/generate_using_aws"
-GENERATE_API_USING_GCP_URL="http://127.0.0.1:8000/generate_using_gcp"
+GENERATE_API_USING_AWS_URL = "http://127.0.0.1:8000/generate_using_aws"
+GENERATE_API_USING_GCP_URL = "http://127.0.0.1:8000/generate_using_gcp"
 
-def generate_response(prompt:str) -> str:
-    resp=requests.post(
-        GENERATE_API_USING_GCP_URL,
-        json={
-            "query":prompt
-        }
-    )
-    resp=resp.json()["answer"]
+
+def generate_response(prompt: str) -> str:
+    resp = requests.post(GENERATE_API_USING_GCP_URL, json={"query": prompt})
+    resp = resp.json()["answer"]
+    # resp="hey"
     return resp
 
 
-
-st.set_page_config(
-    page_title="Twin LLM",
-    page_icon="🤖",
-    layout="wide"
-)
+st.set_page_config(page_title="Twin LLM", page_icon="🤖", layout="wide")
 
 if "messages" not in st.session_state:
-    st.session_state.messages=[]
+    st.session_state.messages = []
 
 
 st.html(
@@ -52,7 +44,7 @@ st.html(
     }
 
 
-   
+
     .landing-container {
         height: 65vh;
 
@@ -83,7 +75,7 @@ st.html(
     }
 
 
-    
+
 
     .chat-header {
         width: 100%;
@@ -102,7 +94,7 @@ st.html(
     }
 
 
-   
+
     [data-testid="stChatMessage"] {
         max-width: 850px;
         margin-left: auto;
@@ -110,7 +102,7 @@ st.html(
     }
 
 
-    
+
 
     [data-testid="stChatInput"] {
         max-width: 850px;
@@ -141,43 +133,31 @@ if not st.session_state.messages:
         """
     )
 
-    col1,col2,col3=st.columns([1,2,1])
+    col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
         prompt = st.text_input(
             "Prompt",
             placeholder="What would you like your Twin to write?",
             label_visibility="collapsed",
-            key="initial_prompt"
+            key="initial_prompt",
         )
 
         st.write()
         st.write()
         st.write()
 
-        generate_button=st.button(
-            "Generate",
-            type="primary",
-            use_container_width=True
+        generate_button = st.button(
+            "Generate", type="primary", use_container_width=True
         )
 
-    prompt=str(prompt)
+    prompt = str(prompt)
     if generate_button and prompt.strip():
-        st.session_state.messages.append(
-            {
-                "role":"user",
-                "content":prompt
-            }
-        )
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-        response=generate_response(prompt=prompt)
+        response = generate_response(prompt=prompt)
 
-        st.session_state.messages.append(
-            {
-                "role":"assistant",
-                "content":response
-            }
-        )
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
         st.rerun()
 
@@ -194,15 +174,9 @@ else:
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(
-                message["content"]
-            )
+            st.markdown(message["content"])
 
-
-    prompt=st.chat_input(
-        "What would you like your Twin to write?"
-    )
-    
+    prompt = st.chat_input("What would you like your Twin to write?")
 
     if prompt:
         prompt = str(prompt)
@@ -211,26 +185,11 @@ else:
         with st.chat_message("user"):
             st.markdown(prompt)
 
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-        st.session_state.messages.append(
-            {
-                "role":"user",
-                "content":prompt
-            }
-        )
-
-        response=generate_response(prompt=prompt)
+        response = generate_response(prompt=prompt)
 
         with st.chat_message("assistant"):
             st.markdown(response)
 
-
-        st.session_state.messages.append(
-            {
-                "role":"assistant",
-                "content":response
-            }
-        )
-
-
-
+        st.session_state.messages.append({"role": "assistant", "content": response})
