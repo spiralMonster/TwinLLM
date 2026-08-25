@@ -160,6 +160,12 @@ create-sagemaker-execution-role="poetry run python -m model_deployment.aws_deplo
 ### Deploying Inference Endpoint on AWS SageMaker:
 deploy-inference-endpoint-sagemaker="poetry run python -m model_deployment.aws_deployment.deploy"
 
+### Cleaning up AWS Resources:
+cleanup-aws-resources="poetry run python -m model_deployment.aws_deployment.delete_resources.delete_sagemaker_endpoint"
+
+### Testing Deployed Model on Amazon SageMaker:
+test-deployed-model-on-aws="poetry run python -m model_inference.inference_using_aws.llm_inference_sagemaker_endpoint"
+
 
 ## Model Deployement on GCP:
 

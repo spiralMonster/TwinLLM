@@ -3,6 +3,8 @@ from typing import Any,Dict,Optional
 from loguru import logger
 
 import boto3
+
+from model_fine_tuning.fine_tune_instruct_model.llm_twin_fine_tune_instruct_model import alpaca_template
 from model_inference.base.inference import Inference
 
 from settings import Settings
@@ -84,3 +86,31 @@ class LLMInferenceSagemakerEndpoint(Inference):
 
 
 
+
+if __name__=="__main__":
+    from model_inference.inference_executor import InferenceExecutor
+
+    endpoint_name=Settings.SAGEMAKER_ENDPOINT_NAME
+    llm=LLMInferenceSagemakerEndpoint(endpoint_name=endpoint_name)
+
+    alpaca_template="""
+    Below is an instruction that describes a task.Write a response that appropriately completes the request.
+    
+    ### Instruction:
+    {}
+    
+    ### Response:
+    """
+
+    query="How genz are different from the older generations?"
+    prompt=alpaca_template.format(query,"")
+
+    inference_exec=InferenceExecutor(
+        llm=llm,
+        prompt=prompt
+    )
+
+    model_response=inference_exec.execute()
+
+    print(f"User: {query}")
+    print(f"Twin LLM: {model_response}")
